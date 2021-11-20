@@ -1,9 +1,10 @@
-## Lido API Template
+## Lido Reward Allocation Bot
 
 ## Installation
 
 ```bash
 $ yarn install
+$ yarn typechain
 ```
 
 ## Running the app
@@ -31,7 +32,3 @@ $ yarn test:e2e
 # test coverage
 $ yarn test:cov
 ```
-
-## License
-
-API Template is [MIT licensed](LICENSE).

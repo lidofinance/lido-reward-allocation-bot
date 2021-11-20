@@ -28,28 +28,6 @@ export class EnvironmentVariables {
 
   @IsOptional()
   @IsString()
-  CORS_WHITELIST_REGEXP = '';
-
-  @IsOptional()
-  @IsNumber()
-  @Min(1)
-  @Transform(toNumber({ defaultValue: 5 }))
-  GLOBAL_THROTTLE_TTL: number;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(1)
-  @Transform(toNumber({ defaultValue: 100 }))
-  GLOBAL_THROTTLE_LIMIT: number;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(1)
-  @Transform(toNumber({ defaultValue: 1 }))
-  GLOBAL_CACHE_TTL: number;
-
-  @IsOptional()
-  @IsString()
   SENTRY_DSN: string | null = null;
 
   @IsOptional()
@@ -61,6 +39,9 @@ export class EnvironmentVariables {
   @IsEnum(LogFormat)
   @Transform(({ value }) => value || LogFormat.json)
   LOG_FORMAT: LogFormat;
+
+  @IsString()
+  RPC_URL: string;
 }
 
 export function validate(config: Record<string, unknown>) {

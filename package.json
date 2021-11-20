@@ -1,7 +1,7 @@
 {
-  "name": "lido-api-template",
+  "name": "lido-reward-allocation-bot",
   "version": "0.0.1",
-  "description": "Lido API Template",
+  "description": "Lido Reward Allocation Bot",
   "author": "Lido team",
   "private": true,
   "license": "MIT",
@@ -21,11 +21,11 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@lido-sdk/constants": "^1.2.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^1.0.1",
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-fastify": "^8.0.9",
-    "@nestjs/swagger": "^5.1.0",
     "@nestjs/terminus": "^8.0.1",
     "@nestjs/throttler": "^2.0.0",
     "@sentry/node": "^6.13.2",
@@ -34,7 +34,7 @@
     "cache-manager": "^3.4.4",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
-    "fastify-swagger": "^4.12.3",
+    "ethers": "^5.5.1",
     "nest-winston": "^1.6.1",
     "prom-client": "^14.0.0",
     "reflect-metadata": "^0.1.13",
@@ -76,6 +76,10 @@
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
