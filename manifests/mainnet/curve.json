@@ -1,0 +1,45 @@
+{
+  "name": "Curve Liquidity Farming",
+  "version": "1.0.0",
+  "metrics": [
+    {
+      "name": "isPeriodFinished",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0x753D5167C31fBEB5b49624314d74A957Eb271709",
+        "method": "function is_rewards_period_finished() view returns (bool)"
+      }
+    },
+    {
+      "name": "periodFinishUnix",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0x99ac10631f69c753ddb595d074422a0922d9056b",
+        "method": "function periodFinish() view returns (uint256)"
+      }
+    },
+    {
+      "name": "tokenBalance",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
+        "method": "function balanceOf(_owner address) view returns (balance uint256)"
+      }
+    }
+  ],
+  "automation": [
+    {
+      "rules": {
+        "and": [
+          { "==": [{ "var": "isPeriodFinished" }, true] },
+          { ">": [{ "var": "tokenBalance" }, 1000000] }
+        ]
+      },
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0x753D5167C31fBEB5b49624314d74A957Eb271709",
+        "method": "function start_next_rewards_period()"
+      }
+    }
+  ]
+}
