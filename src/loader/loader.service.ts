@@ -24,7 +24,7 @@ export class LoaderService {
     return name || network.name;
   }
 
-  async parseFiles(filesPaths: string[]) {
+  async parseFiles(filesPaths: string[]): Promise<Manifest[]> {
     return await Promise.all(
       filesPaths.map(async (filesPath) => {
         this.logger.log('Loading manifest', { filesPath });

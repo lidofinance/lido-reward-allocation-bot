@@ -1,0 +1,52 @@
+{
+  "name": "1inch v2 Liquidity Farming",
+  "version": "1.0.0",
+  "metrics": [
+    {
+      "name": "isPeriodFinished",
+      "help": "Returns 1 if reward period is finished or 0 if it's not",
+      "type": "gauge",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0xf5436129cf9d8fa2a1cb6e591347155276550635",
+        "method": "function is_rewards_period_finished() view returns (bool)"
+      }
+    },
+    {
+      "name": "periodFinishUnix",
+      "help": "Unix timestamp when the current period will be finished",
+      "type": "gauge",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0xf5436129cf9d8fa2a1cb6e591347155276550635",
+        "method": "function period_finish() view returns (uint256)"
+      }
+    },
+    {
+      "name": "tokenBalance",
+      "help": "Reward manager LDO balance",
+      "type": "gauge",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
+        "method": "function balanceOf(address) view returns (uint256)",
+        "args": ["0xf5436129cf9d8fa2a1cb6e591347155276550635"]
+      }
+    }
+  ],
+  "automation": [
+    {
+      "rules": {
+        "and": [
+          { "==": [{ "var": "isPeriodFinished" }, true] },
+          { ">": [{ "var": "tokenBalance" }, 1000000] }
+        ]
+      },
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0xf5436129cf9d8fa2a1cb6e591347155276550635",
+        "method": "function start_next_rewards_period()"
+      }
+    }
+  ]
+}

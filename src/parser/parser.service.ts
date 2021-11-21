@@ -6,7 +6,13 @@ import { METRICS_PREFIX } from 'common/prometheus';
 import { snakeCase } from 'lodash';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ProviderService, CallOverrides } from 'provider';
-import { RawMetric, ContractMethodCall, MetricRawRequest } from './interfaces';
+import {
+  RawMetric,
+  Metric,
+  ContractMethodCall,
+  MetricRawRequest,
+  Manifest,
+} from './interfaces';
 import { Gauge } from 'prom-client';
 
 @Injectable()
@@ -18,7 +24,7 @@ export class ParserService {
     private providerService: ProviderService,
   ) {}
 
-  public parseJSON(content: string) {
+  public parseJSON(content: string): Manifest {
     try {
       const parsed = JSON.parse(content);
       const { name, version, metrics, automation } = parsed;
@@ -42,7 +48,7 @@ export class ParserService {
     }
   }
 
-  public parseRawMetrics(rawMetrics: RawMetric[]) {
+  public parseRawMetrics(rawMetrics: RawMetric[]): Metric[] {
     const batchProvider = this.providerService.getNewBatchProviderInstance();
 
     return rawMetrics.map((rawMetric) => {
@@ -54,13 +60,28 @@ export class ParserService {
     });
   }
 
-  public getPromMetric(rawMetric: RawMetric) {
-    if (rawMetric.type === 'gauge') {
-      return new Gauge({
-        name: `${METRICS_PREFIX}${snakeCase(rawMetric.name)}`,
-        help: rawMetric.help,
-        labelNames: ['name'],
-      });
+  metrics: Record<string, Metric['promMetric']> = {};
+
+  public getMetricNameWithPrefix(name: string): string {
+    return `${METRICS_PREFIX}${snakeCase(name)}`;
+  }
+
+  public getPromMetric(rawMetric: RawMetric): Metric['promMetric'] {
+    const { name } = rawMetric;
+
+    if (!this.metrics[name]) {
+      this.metrics[name] = this.getPromMetricByType(rawMetric);
+    }
+
+    return this.metrics[name];
+  }
+
+  public getPromMetricByType(rawMetric: RawMetric) {
+    const { name, help, type } = rawMetric;
+    const fullName = this.getMetricNameWithPrefix(name);
+
+    if (type === 'gauge') {
+      return new Gauge({ name: fullName, help, labelNames: ['name'] });
     }
 
     this.logger.error('Metric is not supported', { rawMetric });
