@@ -2,7 +2,7 @@ import { promise as glob } from 'glob-promise';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { readFile } from 'fs/promises';
-import { ParserService } from 'parser';
+import { Manifest, ParserService } from 'parser';
 import { ProviderService } from 'provider';
 import { CHAINS } from '@lido-sdk/constants';
 
@@ -35,7 +35,7 @@ export class LoaderService {
     );
   }
 
-  async load() {
+  async loadManifests(): Promise<Manifest[]> {
     try {
       const network = await this.getNetworkName();
       this.logger.log('Network detected', { network });

@@ -1,2 +1,3 @@
-export * from './provider.interface';
 export * from './blocktag.interface';
+export * from './overrides.interface';
+export * from './provider.interface';

@@ -37,6 +37,7 @@
     "ethers": "^5.5.1",
     "glob": "^7.2.0",
     "glob-promise": "^4.2.2",
+    "lodash": "^4.17.21",
     "nest-winston": "^1.6.1",
     "prom-client": "^14.0.0",
     "reflect-metadata": "^0.1.13",
