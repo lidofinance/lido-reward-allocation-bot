@@ -6,9 +6,9 @@ import { LoggerModule } from 'common/logger';
 import { ConfigModule } from 'common/config';
 import { SentryInterceptor } from 'common/sentry';
 import { HealthModule } from 'common/health';
+import { ProviderModule } from 'ethereum/provider';
 import { AppService } from 'app.service';
 import { LoaderModule } from 'loader';
-import { ProviderModule } from 'provider';
 
 @Module({
   imports: [

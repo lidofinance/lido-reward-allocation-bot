@@ -2,6 +2,7 @@ import { PrometheusModule as PrometheusModuleSource } from '@willsoto/nestjs-pro
 import {
   PrometheusRPCErrorsCounterProvider,
   PrometheusRPCRequestsHistogramProvider,
+  PrometheusAccountBalanceProvider,
 } from './prometheus.provider';
 import { METRICS_PREFIX, METRICS_URL } from './prometheus.constants';
 import { PrometheusController } from './prometheus.controller';
@@ -18,6 +19,7 @@ export const PrometheusModule = PrometheusModuleSource.register({
 const providers = [
   PrometheusRPCRequestsHistogramProvider,
   PrometheusRPCErrorsCounterProvider,
+  PrometheusAccountBalanceProvider,
 ];
 
 PrometheusModule.global = true;

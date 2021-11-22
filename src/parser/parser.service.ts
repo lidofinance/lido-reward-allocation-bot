@@ -5,7 +5,7 @@ import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { METRICS_PREFIX } from 'common/prometheus';
 import { snakeCase } from 'lodash';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { ProviderService, CallOverrides } from 'provider';
+import { ProviderService, CallOverrides } from 'ethereum/provider';
 import {
   RawMetric,
   Metric,
@@ -109,7 +109,7 @@ export class ParserService {
 
     const contract = new Contract(address, abi, provider);
 
-    return async (overrides?: CallOverrides) => {
+    return async (overrides: CallOverrides = {}) => {
       return await contract[methodName](...args, overrides);
     };
   }

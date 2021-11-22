@@ -1,7 +1,7 @@
 import { WinstonModule } from 'nest-winston';
 import { ConfigModule, ConfigService, LogFormat } from 'common/config';
 import * as winston from 'winston';
-import { ProviderService } from 'provider';
+import { ProviderService } from 'ethereum/provider';
 import { ModuleRef } from '@nestjs/core';
 
 export const LoggerModule = WinstonModule.forRootAsync({

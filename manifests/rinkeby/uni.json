@@ -1,0 +1,28 @@
+{
+  "name": "Uniswap Test Rewards",
+  "version": "1.0.0",
+  "metrics": [
+    {
+      "name": "periodFinishUnix",
+      "help": "Unix timestamp when the current period will be finished",
+      "type": "gauge",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0xD74cfebDbfAF43e304CB82A0Fa566E24a234b5F7",
+        "method": "function periodFinish() view returns (uint256)"
+      }
+    },
+    {
+      "name": "tokenBalance",
+      "help": "Reward manager LDO balance",
+      "type": "gauge",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0xbfcb02cf3df4f36ab8185469834e0e00a5fc6053",
+        "method": "function balanceOf(address) view returns (uint256)",
+        "args": ["0xD74cfebDbfAF43e304CB82A0Fa566E24a234b5F7"]
+      }
+    }
+  ],
+  "automation": []
+}

@@ -3,7 +3,7 @@ import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { readFile } from 'fs/promises';
 import { Manifest, ParserService } from 'parser';
-import { ProviderService } from 'provider';
+import { ProviderService } from 'ethereum/provider';
 import { CHAINS } from '@lido-sdk/constants';
 
 @Injectable()

@@ -4,11 +4,12 @@ import {
   LoggerService,
   OnModuleInit,
 } from '@nestjs/common';
+import { ConfigService } from 'common/config';
 import { OneAtTime } from 'common/decorators';
 import { LoaderService } from 'loader';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Manifest } from 'parser';
-import { ProviderService } from 'provider';
+import { ProviderService } from 'ethereum/provider';
 
 @Injectable()
 export class AppService implements OnModuleInit {
@@ -18,16 +19,16 @@ export class AppService implements OnModuleInit {
 
     private loaderService: LoaderService,
     private providerService: ProviderService,
+    private configService: ConfigService,
   ) {}
 
   programs?: Manifest[];
 
   @OneAtTime()
   async handleNewBlock() {
-    const block = await this.providerService.getBlock();
-    const blockTag = { blockHash: block.hash };
-
     try {
+      const blockTag = await this.providerService.getBlockTag();
+
       const data = await Promise.all(
         this.programs.map(async (program) => {
           const collectedData = await Promise.all(

@@ -1,4 +1,4 @@
-import { CallOverrides } from 'provider';
+import { CallOverrides } from 'ethereum/provider';
 
 export type MetricRawRequest = ContractMethodCall;
 export type AutomationRequest = ContractMethodCall;

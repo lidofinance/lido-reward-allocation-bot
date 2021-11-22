@@ -15,8 +15,8 @@ import {
 } from 'common/prometheus';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Counter, Histogram } from 'prom-client';
-import { MAX_TIME_WITHOUT_NEW_BLOCKS_MS } from 'provider';
 import { RpcBatchProvider, RpcProvider } from './interfaces';
+import { MAX_TIME_WITHOUT_NEW_BLOCKS_MS } from './provider.constants';
 import { ProviderService } from './provider.service';
 import { FormatterWithEIP1898 } from './formatter.service';
 

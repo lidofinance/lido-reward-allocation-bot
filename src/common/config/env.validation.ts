@@ -4,6 +4,8 @@ import {
   IsNumber,
   IsString,
   IsOptional,
+  IsNotEmpty,
+  IsHexadecimal,
   validateSync,
   Min,
 } from 'class-validator';
@@ -41,7 +43,13 @@ export class EnvironmentVariables {
   LOG_FORMAT: LogFormat;
 
   @IsString()
+  @IsNotEmpty()
   RPC_URL: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsHexadecimal()
+  WALLET_PRIVATE_KEY: string;
 }
 
 export function validate(config: Record<string, unknown>) {
