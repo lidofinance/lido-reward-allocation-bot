@@ -2,9 +2,9 @@ import { promise as glob } from 'glob-promise';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { readFile } from 'fs/promises';
-import { Manifest, ParserService } from 'parser';
+import { Manifest, ParserService } from 'manifest/parser';
 import { ProviderService } from 'ethereum/provider';
-import { CHAINS } from '@lido-sdk/constants';
+import { MANIFEST_DIR } from './loader.constants';
 
 @Injectable()
 export class LoaderService {
@@ -14,17 +14,19 @@ export class LoaderService {
     private providerService: ProviderService,
   ) {}
 
-  async getFileNames(network: string): Promise<string[]> {
-    return await glob(`manifests/${network}/*.json`);
+  /**
+   * Returns manifest file paths
+   */
+  async getFilePaths(network: string): Promise<string[]> {
+    return await glob(`${MANIFEST_DIR}/${network}/*.json`);
   }
 
-  async getNetworkName(): Promise<string> {
-    const network = await this.providerService.provider.getNetwork();
-    const name = CHAINS[network.chainId]?.toLocaleLowerCase();
-    return name || network.name;
-  }
-
-  async parseFiles(filesPaths: string[]): Promise<Manifest[]> {
+  /**
+   * Parses manifest files
+   * @param filesPaths array of paths
+   * @returns array of parsed JSON objects
+   */
+  async parseManifests(filesPaths: string[]): Promise<Manifest[]> {
     return await Promise.all(
       filesPaths.map(async (filesPath) => {
         this.logger.log('Loading manifest', { filesPath });
@@ -35,12 +37,16 @@ export class LoaderService {
     );
   }
 
+  /**
+   * Loads manifests from files
+   * @returns array of manifests
+   */
   async loadManifests(): Promise<Manifest[]> {
     try {
-      const network = await this.getNetworkName();
+      const network = await this.providerService.getNetworkName();
       this.logger.log('Network detected', { network });
 
-      const filesPaths = await this.getFileNames(network);
+      const filesPaths = await this.getFilePaths(network);
       if (filesPaths.length) {
         this.logger.log('Manifests found', { network, filesPaths });
       } else {
@@ -48,7 +54,7 @@ export class LoaderService {
         process.exit(1);
       }
 
-      return await this.parseFiles(filesPaths);
+      return await this.parseManifests(filesPaths);
     } catch (error) {
       this.logger.error(error);
       process.exit(1);

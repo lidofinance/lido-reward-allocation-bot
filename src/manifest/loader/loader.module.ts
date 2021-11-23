@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ParserModule } from 'parser';
+import { ParserModule } from 'manifest/parser';
 import { LoaderService } from './loader.service';
 
 @Module({

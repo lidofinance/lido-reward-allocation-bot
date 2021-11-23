@@ -7,8 +7,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ConfigService } from 'common/config';
-import { AppModule } from 'app.module';
-import { APP_NAME, APP_VERSION } from 'app.constants';
+import { AppModule, APP_NAME, APP_VERSION } from 'app';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(

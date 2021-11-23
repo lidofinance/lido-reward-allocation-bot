@@ -7,8 +7,8 @@ import { ConfigModule } from 'common/config';
 import { SentryInterceptor } from 'common/sentry';
 import { HealthModule } from 'common/health';
 import { ProviderModule } from 'ethereum/provider';
-import { AppService } from 'app.service';
-import { LoaderModule } from 'loader';
+import { LoaderModule } from 'manifest/loader';
+import { AppService } from './app.service';
 
 @Module({
   imports: [

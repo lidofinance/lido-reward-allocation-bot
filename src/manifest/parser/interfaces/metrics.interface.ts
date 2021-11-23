@@ -20,9 +20,11 @@ export type Metric = GaugeMetric;
 
 export type MetricLabels = 'name';
 
+export type PromMetricSupported = Gauge<MetricLabels>;
+
 export interface GaugeMetric {
   name: string;
   type: 'gauge';
-  promMetric: Gauge<MetricLabels>;
+  promMetric: PromMetricSupported;
   request: MetricRequest;
 }
