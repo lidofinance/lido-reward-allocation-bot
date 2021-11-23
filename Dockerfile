@@ -8,6 +8,7 @@ COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --non-interactive && yarn cache clean
 
 COPY ./tsconfig*.json ./
+COPY ./manifests ./manifests
 COPY ./src ./src
 
 RUN yarn build
@@ -33,6 +34,7 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY --from=building /app/dist ./dist
+COPY --from=building /app/manifests ./manifests
 COPY --from=building /app/node_modules ./node_modules
 COPY ./package.json ./
 
