@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { getNetwork } from '@ethersproject/networks';
 import { ConfigModule } from 'common/config';
 import { ProviderService } from './provider.service';
-import { MockProviderModule } from 'provider';
+import { MockProviderModule } from 'ethereum/provider';
 
 describe('ProviderService', () => {
   let providerService: ProviderService;
