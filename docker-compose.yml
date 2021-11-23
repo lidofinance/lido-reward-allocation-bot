@@ -7,5 +7,9 @@ services:
     restart: always
     environment:
       - PORT=3000
+      - LOG_LEVEL=debug
+      - LOG_FORMAT=simple
+      - RPC_URL=<rpc url>
+      - WALLET_PRIVATE_KEY
     ports:
       - '3000:3000'
