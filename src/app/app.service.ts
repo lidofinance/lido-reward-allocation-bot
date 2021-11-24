@@ -20,23 +20,22 @@ export class AppService implements OnModuleInit {
     private providerService: ProviderService,
   ) {}
 
-  programs?: Manifest[];
-
+  /**
+   * Handles the appearance of a new block in the network
+   */
   @OneAtTime()
-  async handleNewBlock() {
+  async handleNewBlock(programs: Manifest[]) {
     try {
       const blockTag = await this.providerService.getBlockTag();
       const payload = { overrides: { blockTag } };
 
       const data = await Promise.all(
-        this.programs.map(async (program) => {
+        programs.map(async (program) => {
           const collectedData = await Promise.all(
             program.metrics.map(async (metric) => {
               const value = await metric.request(payload);
 
-              metric.promMetric
-                .labels({ name: program.name })
-                .set(Number(value));
+              metric.promMetric.labels({ name: program.name }).set(value);
 
               return [metric.name, value];
             }),
@@ -53,7 +52,10 @@ export class AppService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    this.programs = await this.loaderService.loadManifests();
-    this.providerService.provider.on('block', () => this.handleNewBlock());
+    const programs = await this.loaderService.loadManifests();
+
+    this.providerService.provider.on('block', () => {
+      this.handleNewBlock(programs);
+    });
   }
 }

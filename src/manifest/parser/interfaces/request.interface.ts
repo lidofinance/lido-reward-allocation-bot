@@ -10,7 +10,7 @@ export interface ContractMethodCall {
   args?: any[];
 }
 
-export type MetricRequest = (payload?: MetricRequestPayload) => unknown;
+export type MetricRequest<T> = (payload?: MetricRequestPayload) => Promise<T>;
 
 export interface MetricRequestPayload {
   overrides?: CallOverrides;

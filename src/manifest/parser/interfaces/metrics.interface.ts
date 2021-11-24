@@ -26,5 +26,5 @@ export interface GaugeMetric {
   name: string;
   type: 'gauge';
   promMetric: PromMetricSupported;
-  request: MetricRequest;
+  request: MetricRequest<number>;
 }

@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Gauge } from 'prom-client';
@@ -26,10 +27,46 @@ export class ParserMetricsService {
     return rawMetrics.map((rawMetric) => {
       const { name, type } = rawMetric;
       const promMetric = this.getPromMetric(rawMetric);
-      const request = this.parserRequestService.parseRequest(rawMetric.request);
+      const request = this.getRequestByType(rawMetric);
 
       return { name, type, promMetric, request };
     });
+  }
+
+  /**
+   * Returns request query with formatted result
+   * @param rawMetric raw metric object
+   * @returns request function
+   */
+  public getRequestByType(rawMetric: RawMetric) {
+    const request = this.parserRequestService.parseRequest(rawMetric.request);
+
+    if (rawMetric.type === 'gauge') {
+      return async (...args: Parameters<typeof request>): Promise<number> => {
+        const result = await request(...args);
+
+        if (BigNumber.isBigNumber(result)) {
+          // TODO: replace with BigInt
+          // prom-client does not support BigInt yet
+          // return result.toBigInt();
+
+          return Number(result.toHexString());
+        }
+
+        if (typeof result === 'number') {
+          return result;
+        }
+
+        if (typeof result === 'boolean') {
+          return Number(result);
+        }
+
+        throw new Error('Result cannot be converted to Gauge metric');
+      };
+    }
+
+    this.logger.error('Metric is not supported', { rawMetric });
+    process.exit(1);
   }
 
   /**
