@@ -1,6 +1,7 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Manifest } from './interfaces';
+import { ParserAutomationService } from './parser-automation.service';
 import { ParserMetricsService } from './parser-metric.service';
 
 @Injectable()
@@ -10,6 +11,7 @@ export class ParserService {
     private logger: LoggerService,
 
     private parserMetricService: ParserMetricsService,
+    private parserAutomationService: ParserAutomationService,
   ) {}
 
   /**
@@ -32,8 +34,8 @@ export class ParserService {
       return {
         name,
         version,
-        metrics: this.parserMetricService.parseRawMetrics(parsed.metrics),
-        automation: [],
+        metrics: this.parserMetricService.parseRawMetrics(metrics),
+        automation: this.parserAutomationService.parseRawAutomation(automation),
       };
     } catch (error) {
       this.logger.error(error);

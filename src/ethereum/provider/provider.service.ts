@@ -1,7 +1,7 @@
 import { Block } from '@ethersproject/abstract-provider';
 import { CHAINS } from '@lido-sdk/constants';
 import { Injectable } from '@nestjs/common';
-import { RpcBatchProvider, RpcProvider, BlockTag } from './interfaces';
+import { RpcBatchProvider, RpcProvider } from './interfaces';
 
 @Injectable()
 export class ProviderService {
@@ -41,14 +41,6 @@ export class ProviderService {
     return cachedBlockNumber === -1
       ? await this.provider.getBlockNumber()
       : cachedBlockNumber;
-  }
-
-  /**
-   * Returns current block tag
-   */
-  async getBlockTag(): Promise<BlockTag> {
-    const block = await this.getBlock();
-    return { blockHash: block.hash };
   }
 
   /**

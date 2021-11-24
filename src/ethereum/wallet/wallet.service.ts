@@ -1,5 +1,5 @@
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Gauge, register } from 'prom-client';
+import { Gauge } from 'prom-client';
 import { formatEther } from '@ethersproject/units';
 import { Wallet } from '@ethersproject/wallet';
 import {
@@ -28,9 +28,6 @@ export class WalletService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const walletAddress = this.address;
-    register.setDefaultLabels({ walletAddress });
-
     try {
       await this.updateBalance();
       this.subscribeToEthereumUpdates();

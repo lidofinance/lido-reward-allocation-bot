@@ -26,17 +26,23 @@
   ],
   "automation": [
     {
+      "name": "stake",
+      "help": "Test signed method call",
+      "type": "counter",
       "rules": {
         "and": [
-          { "==": [{ "var": "isPeriodFinished" }, true] },
-          { ">": [{ "var": "tokenBalance" }, 1000000] }
+          { ">": [{ "var": "tokenBalance" }, 1e18] },
+          { "==": [{ "%": [{ "var": "block.number" }, 5] }, 0] }
         ]
       },
       "request": {
         "type": "contractMethodSignedCall",
-        "address": "0xD74cfebDbfAF43e304CB82A0Fa566E24a234b5F7",
-        "method": "function stake(uint256)",
-        "args": [1]
+        "address": "0xbfcb02cf3df4f36ab8185469834e0e00a5fc6053",
+        "method": "function approve(address, uint256)",
+        "args": [
+          "0xD74cfebDbfAF43e304CB82A0Fa566E24a234b5F7",
+          "0xde0b6b3a7640000"
+        ]
       }
     }
   ]

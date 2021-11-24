@@ -1,18 +1,15 @@
+import { Signer } from '@ethersproject/abstract-signer';
 import { FormatTypes, Interface } from '@ethersproject/abi';
 import { Contract } from '@ethersproject/contracts';
-import { Signer } from '@ethersproject/abstract-signer';
-import { Provider } from '@ethersproject/providers';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { RpcBatchProvider } from 'ethereum/provider';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import {
   ContractMethodCall,
-  ContractMethodCallCommon,
   ContractMethodSignedCall,
   MetricRawRequest,
   MetricRequestPayload,
 } from 'manifest/parser';
-import { WalletService } from 'ethereum/wallet';
 
 @Injectable()
 export class ParserRequestService {
@@ -21,7 +18,7 @@ export class ParserRequestService {
     private logger: LoggerService,
 
     private batchProvider: RpcBatchProvider,
-    private walletService: WalletService,
+    private signer: Signer,
   ) {}
 
   /**
@@ -47,31 +44,19 @@ export class ParserRequestService {
    * @param request raw request object
    * @returns function calling contract method
    */
-  public getContractMethodCallCommon(
-    request: ContractMethodCallCommon,
-    provider: Provider | Signer,
-  ) {
+  public getContractMethodCall(request: ContractMethodCall) {
     const { address, method, args = [] } = request;
 
     const iface = new Interface([method]);
     const abi = iface.format(FormatTypes.json);
     const methodName = iface.fragments[0].name;
 
-    const contract = new Contract(address, abi, provider);
+    const contract = new Contract(address, abi, this.batchProvider);
 
-    return async (payload?: MetricRequestPayload) => {
+    return async (payload: MetricRequestPayload = {}) => {
       const { overrides = {} } = payload;
       return await contract[methodName](...args, overrides);
     };
-  }
-
-  /**
-   * Parses ContractMethodCall request object from manifest
-   * @param request raw request object
-   * @returns function calling contract method
-   */
-  public getContractMethodCall(request: ContractMethodCall) {
-    return this.getContractMethodCallCommon(request, this.batchProvider);
   }
 
   /**
@@ -80,6 +65,24 @@ export class ParserRequestService {
    * @returns function calling contract method
    */
   public getContractMethodSignedCall(request: ContractMethodSignedCall) {
-    return this.getContractMethodCallCommon(request, this.walletService.wallet);
+    const { address, method, args = [] } = request;
+
+    const iface = new Interface([method]);
+    const abi = iface.format(FormatTypes.json);
+    const methodName = iface.fragments[0].name;
+
+    const contract = new Contract(address, abi, this.signer);
+
+    return async (payload: MetricRequestPayload = {}) => {
+      const { overrides = {} } = payload;
+      const tx = await contract[methodName](...args, overrides);
+
+      this.logger.warn('Transaction sent', { method, args, txHash: tx.hash });
+      this.logger.warn('Waiting for block confirmation');
+
+      await tx.wait();
+
+      this.logger.warn('Block confirmation received');
+    };
   }
 }

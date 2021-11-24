@@ -36,10 +36,13 @@
   ],
   "automation": [
     {
+      "name": "startNextPeriodCallTotal",
+      "help": "A number of start_next_rewards_period calls",
+      "type": "counter",
       "rules": {
         "and": [
           { "==": [{ "var": "isPeriodFinished" }, true] },
-          { ">": [{ "var": "tokenBalance" }, 1000000] }
+          { ">": [{ "var": "tokenBalance" }, 1e18] }
         ]
       },
       "request": {

@@ -1,10 +1,15 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Gauge } from 'prom-client';
+import { Counter, Gauge } from 'prom-client';
 import { snakeCase } from 'lodash';
 import { METRICS_PREFIX } from 'common/prometheus';
-import { Metric, PromMetricSupported, RawMetric } from 'manifest/parser';
+import {
+  Metric,
+  PromBaseMetric,
+  PromMetricSupported,
+  RawMetric,
+} from 'manifest/parser';
 import { ParserRequestService } from './parser-request.service';
 
 @Injectable()
@@ -20,16 +25,16 @@ export class ParserMetricsService {
 
   /**
    * Parses metric object from manifest
-   * @param request raw metric object
-   * @returns parsed metric object
+   * @param rawMetrics array of raw metrics
+   * @returns array of parsed metric objects
    */
   public parseRawMetrics(rawMetrics: RawMetric[]): Metric[] {
     return rawMetrics.map((rawMetric) => {
       const { name, type } = rawMetric;
-      const promMetric = this.getPromMetric(rawMetric);
+      const promMetric = this.getPromMetric(rawMetric, ['name']);
       const request = this.getRequestByType(rawMetric);
 
-      return { name, type, promMetric, request };
+      return { name, type, promMetric, request } as Metric;
     });
   }
 
@@ -65,6 +70,12 @@ export class ParserMetricsService {
       };
     }
 
+    if (rawMetric.type === 'counter') {
+      return async (...args: Parameters<typeof request>): Promise<void> => {
+        await request(...args);
+      };
+    }
+
     this.logger.error('Metric is not supported', { rawMetric });
     process.exit(1);
   }
@@ -83,11 +94,17 @@ export class ParserMetricsService {
    * @param rawMetric raw metric object
    * @returns prometheus metric object
    */
-  public getPromMetric(rawMetric: RawMetric): PromMetricSupported {
+  public getPromMetric(
+    rawMetric: PromBaseMetric,
+    labelNames: string[] = [],
+  ): PromMetricSupported {
     const { name } = rawMetric;
 
     if (!this.cachedMetrics[name]) {
-      this.cachedMetrics[name] = this.getPromMetricByType(rawMetric);
+      this.cachedMetrics[name] = this.getPromMetricByType(
+        rawMetric,
+        labelNames,
+      );
     }
 
     return this.cachedMetrics[name];
@@ -98,12 +115,19 @@ export class ParserMetricsService {
    * @param rawMetric raw metric object
    * @returns prometheus metric object
    */
-  public getPromMetricByType(rawMetric: RawMetric): PromMetricSupported {
-    const { name, help, type } = rawMetric;
+  public getPromMetricByType(
+    rawMetric: PromBaseMetric,
+    labelNames: string[] = [],
+  ): PromMetricSupported {
+    const { name, help } = rawMetric;
     const fullName = this.getPromMetricNameWithPrefix(name);
 
-    if (type === 'gauge') {
-      return new Gauge({ name: fullName, help, labelNames: ['name'] });
+    if (rawMetric.type === 'gauge') {
+      return new Gauge({ name: fullName, help, labelNames });
+    }
+
+    if (rawMetric.type === 'counter') {
+      return new Counter({ name: fullName, help, labelNames });
     }
 
     this.logger.error('Metric is not supported', { rawMetric });
