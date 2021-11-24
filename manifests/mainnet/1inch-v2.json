@@ -43,7 +43,7 @@
         ]
       },
       "request": {
-        "type": "contractMethodCall",
+        "type": "contractMethodSignedCall",
         "address": "0xf5436129cf9d8fa2a1cb6e591347155276550635",
         "method": "function start_next_rewards_period()"
       }
