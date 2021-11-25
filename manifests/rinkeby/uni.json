@@ -18,15 +18,6 @@
         "method": "function balanceOf(address) view returns (uint256)",
         "args": ["0xD74cfebDbfAF43e304CB82A0Fa566E24a234b5F7"]
       }
-    },
-    {
-      "name": "_balance",
-      "request": {
-        "type": "contractMethodCall",
-        "address": "0xD74cfebDbfAF43e304CB82A0Fa566E24a234b5F7",
-        "method": "function balanceOf(address) view returns (uint256)",
-        "args": ["0x094F2cD18C5DE3956edFBB936f6F355092b43359"]
-      }
     }
   ],
   "automation": [
@@ -35,7 +26,7 @@
       "rules": {
         "and": [
           { ">": [{ "var": "tokenBalance" }, 1e18] },
-          { "==": [{ "%": [{ "var": "block.number" }, 5] }, 0] }
+          { "==": [{ "%": [{ "var": "block.number" }, 300] }, 0] }
         ]
       },
       "request": {

@@ -1,5 +1,4 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { ContractTransaction } from '@ethersproject/contracts';
 import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
@@ -85,11 +84,6 @@ export class ParserMetricsService {
         this.setMetricResult(commonLabels, result);
         this.setMetricCounter(commonLabels, 'success');
 
-        if (this.isTransaction(result)) {
-          // do not await for tx confirmation
-          this.handleTxConfirmation(result);
-        }
-
         return result;
       } catch (error) {
         this.setMetricCounter(commonLabels, 'error');
@@ -147,39 +141,6 @@ export class ParserMetricsService {
     if (typeof formattedResult === 'number') {
       this.metricResult.labels(labels).set(formattedResult);
     }
-  }
-
-  /**
-   * Checks is request result is transaction
-   * @param result result of request
-   * @returns is result of request a transaction
-   */
-  public isTransaction(result: unknown): result is ContractTransaction {
-    return (
-      result != null &&
-      typeof result === 'object' &&
-      typeof result['wait'] === 'function'
-    );
-  }
-
-  /**
-   * Handles transaction confirmation
-   * @param tx contract transaction object
-   */
-  public async handleTxConfirmation(tx: ContractTransaction): Promise<void> {
-    const { hash, nonce } = tx;
-    const txMeta = { hash, nonce };
-
-    this.logger.warn(
-      'Transaction sent, waiting for block confirmation',
-      txMeta,
-    );
-
-    // TODO: add max awaiting
-    const { blockNumber, blockHash } = await tx.wait();
-    const blockMeta = { blockNumber, blockHash };
-
-    this.logger.warn('Block confirmation received', blockMeta);
   }
 
   /**
