@@ -1,136 +1,206 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { ContractTransaction } from '@ethersproject/contracts';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Counter, Gauge } from 'prom-client';
-import { snakeCase } from 'lodash';
-import { METRICS_PREFIX } from 'common/prometheus';
 import {
-  Metric,
-  PromBaseMetric,
-  PromMetricSupported,
-  RawMetric,
-} from 'manifest/parser';
+  METRIC_MANIFEST_REQUEST_COUNTER,
+  METRIC_MANIFEST_REQUEST_DURATION,
+  METRIC_MANIFEST_REQUEST_RESULT,
+} from 'common/prometheus';
+import { Counter, Gauge, Histogram } from 'prom-client';
 import { ParserRequestService } from './parser-request.service';
-
+import {
+  MetricRaw,
+  MetricParsed,
+  MetricRequest,
+  MetricRequestResult,
+  ManifestRaw,
+} from './interfaces';
 @Injectable()
 export class ParserMetricsService {
   constructor(
+    @InjectMetric(METRIC_MANIFEST_REQUEST_COUNTER)
+    private metricCounter: Counter<string>,
+
+    @InjectMetric(METRIC_MANIFEST_REQUEST_RESULT)
+    private metricResult: Gauge<string>,
+
+    @InjectMetric(METRIC_MANIFEST_REQUEST_DURATION)
+    private metricHistogram: Histogram<string>,
+
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private logger: LoggerService,
 
     private parserRequestService: ParserRequestService,
   ) {}
 
-  cachedMetrics: Record<string, PromMetricSupported> = {};
+  /**
+   * Parses array of metric objects from manifest
+   * @param manifest raw manifest
+   * @param metrics array of raw metrics
+   * @returns array of parsed metric objects
+   */
+  public parseRawMetrics(
+    manifest: ManifestRaw,
+    metrics: MetricRaw[],
+  ): MetricParsed[] {
+    return metrics.map((metric) => this.parseRawMetric(manifest, metric));
+  }
 
   /**
    * Parses metric object from manifest
-   * @param rawMetrics array of raw metrics
-   * @returns array of parsed metric objects
+   * @param manifest raw manifest
+   * @param metric raw metric
+   * @returns parsed metric object
    */
-  public parseRawMetrics(rawMetrics: RawMetric[]): Metric[] {
-    return rawMetrics.map((rawMetric) => {
-      const { name, type } = rawMetric;
-      const promMetric = this.getPromMetric(rawMetric, ['name']);
-      const request = this.getRequestByType(rawMetric);
-
-      return { name, type, promMetric, request } as Metric;
-    });
+  public parseRawMetric(
+    manifest: ManifestRaw,
+    metric: MetricRaw,
+  ): MetricParsed {
+    const request = this.buildRequest(manifest, metric);
+    return { ...metric, request };
   }
 
   /**
-   * Returns request query with formatted result
-   * @param rawMetric raw metric object
+   * Builds request function with formatted result
+   * @param manifest raw manifest
+   * @param metric raw metric
    * @returns request function
    */
-  public getRequestByType(rawMetric: RawMetric) {
-    const request = this.parserRequestService.parseRequest(rawMetric.request);
+  public buildRequest(manifest: ManifestRaw, metric: MetricRaw) {
+    const request = this.parserRequestService.parseRequest(metric.request);
 
-    if (rawMetric.type === 'gauge') {
-      return async (...args: Parameters<typeof request>): Promise<number> => {
-        const result = await request(...args);
-
-        if (BigNumber.isBigNumber(result)) {
-          // TODO: replace with BigInt
-          // prom-client does not support BigInt yet
-          // return result.toBigInt();
-
-          return Number(result.toHexString());
-        }
-
-        if (typeof result === 'number') {
-          return result;
-        }
-
-        if (typeof result === 'boolean') {
-          return Number(result);
-        }
-
-        throw new Error('Result cannot be converted to Gauge metric');
+    return async (...args: Parameters<typeof request>): Promise<unknown> => {
+      const commonLabels = {
+        manifestName: manifest.name,
+        manifestVersion: manifest.version,
+        metric: metric.name,
       };
-    }
 
-    if (rawMetric.type === 'counter') {
-      return async (...args: Parameters<typeof request>): Promise<void> => {
-        await request(...args);
-      };
-    }
+      try {
+        const wrappedRequest = this.wrapWithMetric(commonLabels, request);
+        const result = await wrappedRequest(...args);
 
-    this.logger.error('Metric is not supported', { rawMetric });
-    process.exit(1);
+        this.setMetricResult(commonLabels, result);
+        this.setMetricCounter(commonLabels, 'success');
+
+        if (this.isTransaction(result)) {
+          // do not await for tx confirmation
+          this.handleTxConfirmation(result);
+        }
+
+        return result;
+      } catch (error) {
+        this.setMetricCounter(commonLabels, 'error');
+        this.logger.error(error);
+      }
+    };
   }
 
   /**
-   * Returns metric name with global prefix
-   * @param name base metric name
-   * @returns metric name with prefix
+   * Wraps request function with prometheus histogram metric
+   * @param labels common labels object
+   * @param request request function
+   * @returns request function
    */
-  public getPromMetricNameWithPrefix(name: string): string {
-    return `${METRICS_PREFIX}${snakeCase(name)}`;
+  public wrapWithMetric(
+    labels: Record<string, string>,
+    request: MetricRequest,
+  ): MetricRequest {
+    return async (...args) => {
+      const endTimer = this.metricHistogram.labels(labels).startTimer();
+
+      try {
+        return await request(...args);
+      } catch (error) {
+        throw error;
+      } finally {
+        endTimer();
+      }
+    };
   }
 
   /**
-   * Creates new metric object or returns cached
-   * @param rawMetric raw metric object
-   * @returns prometheus metric object
+   * Sets prometheus counter metric
+   * @param labels common labels object
+   * @param status request status
    */
-  public getPromMetric(
-    rawMetric: PromBaseMetric,
-    labelNames: string[] = [],
-  ): PromMetricSupported {
-    const { name } = rawMetric;
-
-    if (!this.cachedMetrics[name]) {
-      this.cachedMetrics[name] = this.getPromMetricByType(
-        rawMetric,
-        labelNames,
-      );
-    }
-
-    return this.cachedMetrics[name];
+  public setMetricCounter(
+    labels: Record<string, string>,
+    status: 'success' | 'error',
+  ): void {
+    this.metricCounter.labels({ ...labels, status }).inc();
   }
 
   /**
-   * Creates prometheus metric object based on type
-   * @param rawMetric raw metric object
-   * @returns prometheus metric object
+   * Sets prometheus result metric
+   * @param labels common labels object
+   * @param result result of request
    */
-  public getPromMetricByType(
-    rawMetric: PromBaseMetric,
-    labelNames: string[] = [],
-  ): PromMetricSupported {
-    const { name, help } = rawMetric;
-    const fullName = this.getPromMetricNameWithPrefix(name);
+  public setMetricResult(
+    labels: Record<string, string>,
+    result: unknown,
+  ): void {
+    const formattedResult = this.formatRequestResult(result);
 
-    if (rawMetric.type === 'gauge') {
-      return new Gauge({ name: fullName, help, labelNames });
+    if (typeof formattedResult === 'number') {
+      this.metricResult.labels(labels).set(formattedResult);
+    }
+  }
+
+  /**
+   * Checks is request result is transaction
+   * @param result result of request
+   * @returns is result of request a transaction
+   */
+  public isTransaction(result: unknown): result is ContractTransaction {
+    return (
+      result != null &&
+      typeof result === 'object' &&
+      typeof result['wait'] === 'function'
+    );
+  }
+
+  /**
+   * Handles transaction confirmation
+   * @param tx contract transaction object
+   */
+  public async handleTxConfirmation(tx: ContractTransaction): Promise<void> {
+    const { hash, nonce } = tx;
+    const txMeta = { hash, nonce };
+
+    this.logger.warn(
+      'Transaction sent, waiting for block confirmation',
+      txMeta,
+    );
+
+    // TODO: add max awaiting
+    const { blockNumber, blockHash } = await tx.wait();
+    const blockMeta = { blockNumber, blockHash };
+
+    this.logger.warn('Block confirmation received', blockMeta);
+  }
+
+  /**
+   * Formats a request result for metric
+   * @param tx contract transaction object
+   */
+  public formatRequestResult(result: unknown): MetricRequestResult {
+    if (BigNumber.isBigNumber(result)) {
+      // TODO: replace with BigInt
+      // prom-client does not support BigInt yet
+      // return result.toBigInt();
+
+      return Number(result.toHexString());
     }
 
-    if (rawMetric.type === 'counter') {
-      return new Counter({ name: fullName, help, labelNames });
+    if (typeof result === 'number') {
+      return result;
     }
 
-    this.logger.error('Metric is not supported', { rawMetric });
-    process.exit(1);
+    if (typeof result === 'boolean') {
+      return Number(result);
+    }
   }
 }

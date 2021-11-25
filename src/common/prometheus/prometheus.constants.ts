@@ -7,3 +7,7 @@ export const METRIC_RPC_REQUEST_DURATION = `${METRICS_PREFIX}rpc_requests_durati
 export const METRIC_RPC_REQUEST_ERRORS = `${METRICS_PREFIX}rpc_requests_errors_total`;
 
 export const METRIC_ACCOUNT_BALANCE = `${METRICS_PREFIX}account_balance`;
+
+export const METRIC_MANIFEST_REQUEST_DURATION = `${METRICS_PREFIX}manifest_requests_duration_seconds`;
+export const METRIC_MANIFEST_REQUEST_RESULT = `${METRICS_PREFIX}manifest_requests_result`;
+export const METRIC_MANIFEST_REQUEST_COUNTER = `${METRICS_PREFIX}manifest_requests_total`;

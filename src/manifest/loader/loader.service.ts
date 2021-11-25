@@ -2,7 +2,7 @@ import { promise as glob } from 'glob-promise';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { readFile } from 'fs/promises';
-import { Manifest, ParserService } from 'manifest/parser';
+import { ManifestParsed, ParserService } from 'manifest/parser';
 import { ProviderService } from 'ethereum/provider';
 import { MANIFEST_DIR } from './loader.constants';
 
@@ -15,33 +15,10 @@ export class LoaderService {
   ) {}
 
   /**
-   * Returns manifest file paths
-   */
-  async getFilePaths(network: string): Promise<string[]> {
-    return await glob(`${MANIFEST_DIR}/${network}/*.json`);
-  }
-
-  /**
-   * Parses manifest files
-   * @param filesPaths array of paths
-   * @returns array of parsed JSON objects
-   */
-  async parseManifests(filesPaths: string[]): Promise<Manifest[]> {
-    return await Promise.all(
-      filesPaths.map(async (filesPath) => {
-        this.logger.log('Loading manifest', { filesPath });
-        const content = await readFile(filesPath);
-
-        return this.parserService.parseJSON(String(content));
-      }),
-    );
-  }
-
-  /**
    * Loads manifests from files
    * @returns array of manifests
    */
-  async loadManifests(): Promise<Manifest[]> {
+  async loadManifests(): Promise<ManifestParsed[]> {
     try {
       const network = await this.providerService.getNetworkName();
       this.logger.log('Network detected', { network });
@@ -59,5 +36,28 @@ export class LoaderService {
       this.logger.error(error);
       process.exit(1);
     }
+  }
+
+  /**
+   * Parses manifest files
+   * @param filesPaths array of paths
+   * @returns array of parsed JSON objects
+   */
+  async parseManifests(filesPaths: string[]): Promise<ManifestParsed[]> {
+    return await Promise.all(
+      filesPaths.map(async (filesPath) => {
+        this.logger.log('Loading manifest', { filesPath });
+        const content = await readFile(filesPath);
+
+        return this.parserService.parseJSON(String(content));
+      }),
+    );
+  }
+
+  /**
+   * Returns manifest file paths
+   */
+  async getFilePaths(network: string): Promise<string[]> {
+    return await glob(`${MANIFEST_DIR}/${network}/*.json`);
   }
 }

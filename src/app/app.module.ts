@@ -8,6 +8,7 @@ import { SentryInterceptor } from 'common/sentry';
 import { HealthModule } from 'common/health';
 import { ProviderModule } from 'ethereum/provider';
 import { LoaderModule } from 'manifest/loader';
+import { ProcessorModule } from 'manifest/processor';
 import { AppService } from './app.service';
 
 @Module({
@@ -18,6 +19,7 @@ import { AppService } from './app.service';
     ConfigModule,
     HealthModule,
     LoaderModule,
+    ProcessorModule,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: SentryInterceptor },

@@ -1,11 +1,13 @@
 import { CallOverrides } from 'ethereum/provider';
 
-export type MetricRawRequest = ContractMethodCall | ContractMethodSignedCall;
+export type MetricRequestRaw = ContractMethodCall | ContractMethodSignedCall;
+
+export type MetricRequestResult = number | void;
 
 export interface ContractMethodCallCommon {
   address: string;
   method: string;
-  args?: any[];
+  args?: unknown[];
 }
 
 export interface ContractMethodCall extends ContractMethodCallCommon {
@@ -16,7 +18,9 @@ export interface ContractMethodSignedCall extends ContractMethodCallCommon {
   type: 'contractMethodSignedCall';
 }
 
-export type MetricRequest<T> = (payload?: MetricRequestPayload) => Promise<T>;
+export type MetricRequest<T extends unknown = unknown> = (
+  payload?: MetricRequestPayload,
+) => Promise<T>;
 
 export interface MetricRequestPayload {
   overrides?: CallOverrides;

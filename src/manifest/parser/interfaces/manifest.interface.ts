@@ -1,16 +1,15 @@
-import { RawAutomation, Automation } from './automation.interface';
-import { RawMetric, Metric } from './metrics.interface';
+import { MetricRaw, MetricParsed } from './metrics.interface';
 
-export interface RawManifest {
+export interface ManifestRaw {
   name: string;
   version: string;
-  metrics: RawMetric[];
-  automation: RawAutomation[];
+  metrics: MetricRaw[];
+  automation: MetricRaw[];
 }
 
-export interface Manifest {
+export interface ManifestParsed {
   name: string;
   version: string;
-  metrics: Metric[];
-  automation: Automation[];
+  metrics: MetricParsed[];
+  automation: MetricParsed[];
 }

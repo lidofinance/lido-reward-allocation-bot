@@ -4,8 +4,6 @@
   "metrics": [
     {
       "name": "periodFinishUnix",
-      "help": "Unix timestamp when the current period will be finished",
-      "type": "gauge",
       "request": {
         "type": "contractMethodCall",
         "address": "0x1dD909cDdF3dbe61aC08112dC0Fdf2Ab949f79D8",
@@ -14,8 +12,6 @@
     },
     {
       "name": "tokenBalance",
-      "help": "Reward manager LDO balance",
-      "type": "gauge",
       "request": {
         "type": "contractMethodCall",
         "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
