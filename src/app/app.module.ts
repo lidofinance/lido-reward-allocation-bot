@@ -7,6 +7,7 @@ import { ConfigModule } from 'common/config';
 import { SentryInterceptor } from 'common/sentry';
 import { HealthModule } from 'common/health';
 import { ProviderModule } from 'ethereum/provider';
+import { WalletModule } from 'ethereum/wallet';
 import { LoaderModule } from 'manifest/loader';
 import { ProcessorModule } from 'manifest/processor';
 import { AppService } from './app.service';
@@ -20,6 +21,7 @@ import { AppService } from './app.service';
     HealthModule,
     LoaderModule,
     ProcessorModule,
+    WalletModule,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: SentryInterceptor },

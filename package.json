@@ -1,6 +1,6 @@
 {
   "name": "lido-reward-allocation-bot",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Lido Reward Allocation Bot",
   "author": "Lido team",
   "private": true,

@@ -4,6 +4,7 @@ import {
   makeHistogramProvider,
 } from '@willsoto/nestjs-prometheus';
 import {
+  METRIC_BUILD_INFO,
   METRIC_RPC_REQUEST_ERRORS,
   METRIC_RPC_REQUEST_DURATION,
   METRIC_ACCOUNT_BALANCE,
@@ -11,6 +12,12 @@ import {
   METRIC_MANIFEST_REQUEST_DURATION,
   METRIC_MANIFEST_REQUEST_RESULT,
 } from './prometheus.constants';
+
+export const PrometheusBuildInfoGaugeProvider = makeCounterProvider({
+  name: METRIC_BUILD_INFO,
+  help: 'Build information',
+  labelNames: ['name', 'version', 'network', 'address'] as const,
+});
 
 export const PrometheusRPCRequestsHistogramProvider = makeHistogramProvider({
   name: METRIC_RPC_REQUEST_DURATION,
@@ -23,9 +30,10 @@ export const PrometheusRPCErrorsCounterProvider = makeCounterProvider({
   help: 'Number of RPC requests errors',
 });
 
-export const PrometheusAccountBalanceProvider = makeGaugeProvider({
+export const PrometheusAccountBalanceGaugeProvider = makeGaugeProvider({
   name: METRIC_ACCOUNT_BALANCE,
   help: 'Account balance',
+  labelNames: ['address'],
 });
 
 export const PrometheusManifestRequestsHistogramProvider =
@@ -36,7 +44,7 @@ export const PrometheusManifestRequestsHistogramProvider =
     labelNames: ['manifestName', 'manifestVersion', 'metric'],
   });
 
-export const PrometheusManifestRequestsResultProvider = makeGaugeProvider({
+export const PrometheusManifestRequestsResultGaugeProvider = makeGaugeProvider({
   name: METRIC_MANIFEST_REQUEST_RESULT,
   help: 'Manifest metric values',
   labelNames: ['manifestName', 'manifestVersion', 'metric'],
