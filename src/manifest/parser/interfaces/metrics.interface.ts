@@ -1,30 +1,13 @@
-import { Gauge } from 'prom-client';
-import { MetricRequest, MetricRawRequest } from './request.interface';
+import { MetricRequest, MetricRequestRaw } from './request.interface';
+import { RulesLogic } from 'json-logic-js';
 
-/* Raw metrics */
-
-export type RawMetric = RawGaugeMetric;
-
-export interface RawBaseMetric {
+export interface MetricRaw {
+  request: MetricRequestRaw;
   name: string;
-  help?: string;
-  request: MetricRawRequest;
+  rules?: RulesLogic;
 }
-export interface RawGaugeMetric extends RawBaseMetric {
-  type: 'gauge';
-}
-
-/* Metrics */
-
-export type Metric = GaugeMetric;
 
 export type MetricLabels = 'name';
-
-export type PromMetricSupported = Gauge<MetricLabels>;
-
-export interface GaugeMetric {
-  name: string;
-  type: 'gauge';
-  promMetric: PromMetricSupported;
+export interface MetricParsed extends Omit<MetricRaw, 'request'> {
   request: MetricRequest;
 }

@@ -8,31 +8,29 @@ COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --non-interactive && yarn cache clean
 
 COPY ./tsconfig*.json ./
+COPY ./manifests ./manifests
 COPY ./src ./src
 
 RUN yarn build
 
-FROM node:14-alpine
+FROM node:14-alpine as prod
 
 ARG NODE_ENV="production"
 ARG PORT=3000
-ARG CORS_WHITELIST_REGEXP=
-ARG GLOBAL_THROTTLE_TTL=
-ARG GLOBAL_THROTTLE_LIMIT=
-ARG GLOBAL_CACHE_TTL=
+ARG LOG_LEVEL="debug"
+ARG LOG_FORMAT="json"
 ARG SENTRY_DSN=
-ARG LOG_LEVEL=
-ARG LOG_FORMAT=
+ARG RESUBMIT_TX_TIMEOUT_SECONDS=300
+ARG ERROR_TX_TIMEOUT_SECONDS=120
 
 ENV NODE_ENV=$NODE_ENV \
   PORT=$PORT \
-  CORS_WHITELIST_REGEXP=$CORS_WHITELIST_REGEXP \
-  GLOBAL_THROTTLE_TTL=$GLOBAL_THROTTLE_TTL \
-  GLOBAL_THROTTLE_LIMIT=$GLOBAL_THROTTLE_LIMIT \
-  GLOBAL_CACHE_TTL=$GLOBAL_CACHE_TTL \
   SENTRY_DSN=$SENTRY_DSN \
   LOG_LEVEL=$LOG_LEVEL \
-  LOG_FORMAT=$LOG_FORMAT
+  LOG_FORMAT=$LOG_FORMAT \
+  RESUBMIT_TX_TIMEOUT_SECONDS=$RESUBMIT_TX_TIMEOUT_SECONDS \
+  ERROR_TX_TIMEOUT_SECONDS=$ERROR_TX_TIMEOUT_SECONDS \
+  WALLET_PRIVATE_KEY=
 
 EXPOSE $PORT
 
@@ -40,11 +38,11 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY --from=building /app/dist ./dist
+COPY --from=building /app/manifests ./manifests
 COPY --from=building /app/node_modules ./node_modules
 COPY ./package.json ./
 
-RUN addgroup -S appgroup
-RUN adduser -S appuser -G appgroup
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 USER appuser
 

@@ -50,6 +50,18 @@ export class EnvironmentVariables {
   @IsNotEmpty()
   @IsHexadecimal()
   WALLET_PRIVATE_KEY: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(30)
+  @Transform(toNumber({ defaultValue: 300 }))
+  RESUBMIT_TX_TIMEOUT_SECONDS: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(30)
+  @Transform(toNumber({ defaultValue: 120 }))
+  ERROR_TX_TIMEOUT_SECONDS: number;
 }
 
 export function validate(config: Record<string, unknown>) {

@@ -4,8 +4,6 @@
   "metrics": [
     {
       "name": "isPeriodFinished",
-      "help": "Returns 1 if reward period is finished or 0 if it's not",
-      "type": "gauge",
       "request": {
         "type": "contractMethodCall",
         "address": "0xf5436129cf9d8fa2a1cb6e591347155276550635",
@@ -14,8 +12,6 @@
     },
     {
       "name": "periodFinishUnix",
-      "help": "Unix timestamp when the current period will be finished",
-      "type": "gauge",
       "request": {
         "type": "contractMethodCall",
         "address": "0xf5436129cf9d8fa2a1cb6e591347155276550635",
@@ -24,8 +20,6 @@
     },
     {
       "name": "tokenBalance",
-      "help": "Reward manager LDO balance",
-      "type": "gauge",
       "request": {
         "type": "contractMethodCall",
         "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
@@ -36,14 +30,16 @@
   ],
   "automation": [
     {
+      "name": "startNextPeriodCallTotal",
+      "type": "counter",
       "rules": {
         "and": [
           { "==": [{ "var": "isPeriodFinished" }, true] },
-          { ">": [{ "var": "tokenBalance" }, 1000000] }
+          { ">": [{ "var": "tokenBalance" }, 1e18] }
         ]
       },
       "request": {
-        "type": "contractMethodCall",
+        "type": "contractMethodSignedCall",
         "address": "0xf5436129cf9d8fa2a1cb6e591347155276550635",
         "method": "function start_next_rewards_period()"
       }

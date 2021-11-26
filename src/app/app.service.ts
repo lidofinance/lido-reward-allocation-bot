@@ -7,7 +7,8 @@ import {
 import { OneAtTime } from 'common/decorators';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { LoaderService } from 'manifest/loader';
-import { Manifest } from 'manifest/parser';
+import { ManifestParsed } from 'manifest/parser';
+import { ProcessorService } from 'manifest/processor';
 import { ProviderService } from 'ethereum/provider';
 
 @Injectable()
@@ -18,42 +19,32 @@ export class AppService implements OnModuleInit {
 
     private loaderService: LoaderService,
     private providerService: ProviderService,
+    private processorService: ProcessorService,
   ) {}
 
-  programs?: Manifest[];
+  async onModuleInit(): Promise<void> {
+    const manifests = await this.loaderService.loadManifests();
 
+    this.providerService.provider.on('block', () => {
+      this.handleNewBlock(manifests);
+    });
+  }
+
+  /**
+   * Handles the appearance of a new block in the network
+   */
   @OneAtTime()
-  async handleNewBlock() {
+  async handleNewBlock(manifests: ManifestParsed[]): Promise<void> {
     try {
-      const blockTag = await this.providerService.getBlockTag();
-      const payload = { overrides: { blockTag } };
+      const block = await this.providerService.getBlock();
 
-      const data = await Promise.all(
-        this.programs.map(async (program) => {
-          const collectedData = await Promise.all(
-            program.metrics.map(async (metric) => {
-              const value = await metric.request(payload);
-
-              metric.promMetric
-                .labels({ name: program.name })
-                .set(Number(value));
-
-              return [metric.name, value];
-            }),
-          );
-
-          return Object.fromEntries(collectedData);
+      await Promise.all(
+        manifests.map((program) => {
+          this.processorService.processManifest(program, block);
         }),
       );
-
-      this.logger.log('Collected metrics', data);
     } catch (error) {
       this.logger.error(error);
     }
-  }
-
-  async onModuleInit() {
-    this.programs = await this.loaderService.loadManifests();
-    this.providerService.provider.on('block', () => this.handleNewBlock());
   }
 }

@@ -1,16 +1,26 @@
 import { CallOverrides } from 'ethereum/provider';
 
-export type MetricRawRequest = ContractMethodCall;
-export type AutomationRequest = ContractMethodCall;
+export type MetricRequestRaw = ContractMethodCall | ContractMethodSignedCall;
 
-export interface ContractMethodCall {
-  type: 'contractMethodCall';
+export type MetricRequestResult = number | void;
+
+export interface ContractMethodCallCommon {
   address: string;
   method: string;
-  args?: any[];
+  args?: unknown[];
 }
 
-export type MetricRequest = (payload?: MetricRequestPayload) => unknown;
+export interface ContractMethodCall extends ContractMethodCallCommon {
+  type: 'contractMethodCall';
+}
+
+export interface ContractMethodSignedCall extends ContractMethodCallCommon {
+  type: 'contractMethodSignedCall';
+}
+
+export type MetricRequest<T extends unknown = unknown> = (
+  payload?: MetricRequestPayload,
+) => Promise<T>;
 
 export interface MetricRequestPayload {
   overrides?: CallOverrides;
