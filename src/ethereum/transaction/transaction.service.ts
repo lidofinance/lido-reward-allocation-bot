@@ -3,6 +3,7 @@ import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { ContractTransaction } from '@ethersproject/contracts';
 import { ConfigService } from 'common/config';
 import { TransactionStored, TransactionStatus } from './interfaces';
+import { WAIT_BLOCKS_NUMBER } from './transaction.constants';
 
 @Injectable()
 export class TransactionService {
@@ -116,7 +117,7 @@ export class TransactionService {
     }, resubmitTimeoutSeconds * 1000);
 
     try {
-      const { blockNumber, blockHash } = await tx.wait();
+      const { blockNumber, blockHash } = await tx.wait(WAIT_BLOCKS_NUMBER);
       const blockMeta = { blockNumber, blockHash };
 
       this.logger.warn('Block confirmation received', blockMeta);

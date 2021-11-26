@@ -41,6 +41,9 @@ export class ProcessorService {
     const collectedMetrics = Object.fromEntries(
       await Promise.all(
         manifest.metrics.map(async (metric) => {
+          const isConditionSatisfied = this.checkCondition(block, metric.rules);
+          if (!isConditionSatisfied) return [metric.name, undefined];
+
           const metricValue = await metric.request(payload);
           const formattedValue = this.formatCollectedMetric(metricValue);
           return [metric.name, formattedValue];
@@ -83,22 +86,44 @@ export class ProcessorService {
     await Promise.all(
       manifest.automation.map(async (automation) => {
         const { rules, request } = automation;
-        const data = { ...metrics, block };
-        const isConditionSatisfied = jsonLogic.apply(rules, data);
+        const isConditionSatisfied = this.checkCondition(block, rules, metrics);
+
+        const meta = {
+          manifestName: manifest.name,
+          automationName: automation.name,
+        };
 
         if (isConditionSatisfied) {
-          this.logger.log('Automation condition is satisfied', {
-            manifestName: manifest.name,
-            automationName: automation.name,
-          });
+          this.logger.debug('Automation condition is satisfied', meta);
 
           try {
             await request();
           } catch (error) {
             this.logger.error(error);
           }
+        } else {
+          this.logger.debug('Automation condition is not satisfied', meta);
         }
       }),
     );
+  }
+
+  /**
+   * Check metric condition
+   * @param block current block info
+   * @param rules json logic rules
+   * @param metrics collected metrics
+   */
+  checkCondition(
+    block: Block,
+    rules?: jsonLogic.RulesLogic,
+    metrics?: Record<string, MetricRequestResult>,
+  ): boolean {
+    if (!rules) return true;
+
+    const data = { ...metrics, block };
+    const isConditionSatisfied = jsonLogic.apply(rules, data);
+
+    return isConditionSatisfied;
   }
 }
