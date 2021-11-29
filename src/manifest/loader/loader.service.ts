@@ -18,7 +18,7 @@ export class LoaderService {
    * Loads manifests from files
    * @returns array of manifests
    */
-  async loadManifests(): Promise<ManifestParsed[]> {
+  public async loadManifests(): Promise<ManifestParsed[]> {
     try {
       const network = await this.providerService.getNetworkName();
       this.logger.log('Network detected', { network });
@@ -43,7 +43,7 @@ export class LoaderService {
    * @param filesPaths array of paths
    * @returns array of parsed JSON objects
    */
-  async parseManifests(filesPaths: string[]): Promise<ManifestParsed[]> {
+  public async parseManifests(filesPaths: string[]): Promise<ManifestParsed[]> {
     return await Promise.all(
       filesPaths.map(async (filesPath) => {
         this.logger.log('Loading manifest', { filesPath });
@@ -57,7 +57,7 @@ export class LoaderService {
   /**
    * Returns manifest file paths
    */
-  async getFilePaths(network: string): Promise<string[]> {
+  public async getFilePaths(network: string): Promise<string[]> {
     return await glob(`${MANIFEST_DIR}/${network}/*.json`);
   }
 }

@@ -16,7 +16,10 @@ export class ProcessorService {
    * @param manifest parsed manifest object
    * @param block current block info
    */
-  async processManifest(manifest: ManifestParsed, block: Block): Promise<void> {
+  public async processManifest(
+    manifest: ManifestParsed,
+    block: Block,
+  ): Promise<void> {
     try {
       const collectedMetrics = await this.collectMetrics(manifest, block);
       await this.runAutomation(manifest, block, collectedMetrics);
@@ -31,7 +34,7 @@ export class ProcessorService {
    * @param block current block info
    * @returns collected metrics
    */
-  async collectMetrics(
+  public async collectMetrics(
     manifest: ManifestParsed,
     block: Block,
   ): Promise<Record<string, MetricRequestResult>> {
@@ -78,7 +81,7 @@ export class ProcessorService {
    * @param block current block info
    * @param metrics collected metrics
    */
-  async runAutomation(
+  public async runAutomation(
     manifest: ManifestParsed,
     block: Block,
     metrics: Record<string, MetricRequestResult>,
@@ -114,7 +117,7 @@ export class ProcessorService {
    * @param rules json logic rules
    * @param metrics collected metrics
    */
-  checkCondition(
+  public checkCondition(
     block: Block,
     rules?: jsonLogic.RulesLogic,
     metrics?: Record<string, MetricRequestResult>,
