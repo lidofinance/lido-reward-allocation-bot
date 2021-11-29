@@ -122,7 +122,7 @@ Automations have the same fields as metrics. See details below.
 
 - `name` — Metric name
 - `rules` — [JsonLogic](https://github.com/jwadhams/json-logic-js/) rules. The current block data and previously collected metrics (only available for automations) are passed as a second argument. So you can use this data for conditions for running the request.
-- `request` —
+- `request` — The [request](#request-fields) to be executed
 
 ### Request fields
 
@@ -133,8 +133,8 @@ Automations have the same fields as metrics. See details below.
 
 ### Request types:
 
-- `contractMethodCall` — is used to call the view contract methods
-- `contractMethodSignedCall` - is used to call contract methods that require a transaction to be sent
+- `contractMethodCall` — Uses to call the view contract methods
+- `contractMethodSignedCall` - Uses to call contract methods that require a transaction to be sent
 
 ## Prometheus metrics
 
