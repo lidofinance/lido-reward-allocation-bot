@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService, LogFormat } from 'common/config';
 import * as winston from 'winston';
 import { ProviderService } from 'ethereum/provider';
 import { ModuleRef } from '@nestjs/core';
+import { json, simple } from './logger.format';
 
 export const LoggerModule = WinstonModule.forRootAsync({
   imports: [ConfigModule],
@@ -21,18 +22,8 @@ export const LoggerModule = WinstonModule.forRootAsync({
       new winston.transports.Console({
         format:
           configService.get('LOG_FORMAT', { infer: true }) === LogFormat.json
-            ? winston.format.json()
-            : winston.format.combine(
-                winston.format.colorize({ all: true }),
-                winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-                winston.format.simple(),
-                winston.format.printf((log) => {
-                  const { timestamp, level, message, context, block } = log;
-                  const extra = context ? JSON.stringify(context) : '';
-
-                  return `${timestamp} [${block}] ${level}: ${message} ${extra}`;
-                }),
-              ),
+            ? json(configService)
+            : simple(configService),
       }),
     ],
   }),

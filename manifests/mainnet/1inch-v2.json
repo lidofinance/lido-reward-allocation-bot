@@ -31,7 +31,6 @@
   "automation": [
     {
       "name": "startNextPeriodCallTotal",
-      "type": "counter",
       "rules": {
         "and": [
           { "==": [{ "var": "isPeriodFinished" }, true] },

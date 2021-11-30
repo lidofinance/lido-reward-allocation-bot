@@ -11,7 +11,7 @@ services:
       - LOG_FORMAT=simple
       - RPC_URL=<rpc url>
       - RESUBMIT_TX_TIMEOUT_SECONDS=300
-      - ERROR_TX_TIMEOUT_SECONDS=60
+      - ERROR_TX_TIMEOUT_SECONDS=120
       - WALLET_PRIVATE_KEY
     ports:
       - '3000:3000'

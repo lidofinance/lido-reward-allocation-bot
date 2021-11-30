@@ -16,7 +16,10 @@ export class ProcessorService {
    * @param manifest parsed manifest object
    * @param block current block info
    */
-  async processManifest(manifest: ManifestParsed, block: Block): Promise<void> {
+  public async processManifest(
+    manifest: ManifestParsed,
+    block: Block,
+  ): Promise<void> {
     try {
       const collectedMetrics = await this.collectMetrics(manifest, block);
       await this.runAutomation(manifest, block, collectedMetrics);
@@ -31,7 +34,7 @@ export class ProcessorService {
    * @param block current block info
    * @returns collected metrics
    */
-  async collectMetrics(
+  public async collectMetrics(
     manifest: ManifestParsed,
     block: Block,
   ): Promise<Record<string, MetricRequestResult>> {
@@ -41,6 +44,9 @@ export class ProcessorService {
     const collectedMetrics = Object.fromEntries(
       await Promise.all(
         manifest.metrics.map(async (metric) => {
+          const isConditionSatisfied = this.checkCondition(block, metric.rules);
+          if (!isConditionSatisfied) return [metric.name, undefined];
+
           const metricValue = await metric.request(payload);
           const formattedValue = this.formatCollectedMetric(metricValue);
           return [metric.name, formattedValue];
@@ -75,7 +81,7 @@ export class ProcessorService {
    * @param block current block info
    * @param metrics collected metrics
    */
-  async runAutomation(
+  public async runAutomation(
     manifest: ManifestParsed,
     block: Block,
     metrics: Record<string, MetricRequestResult>,
@@ -83,22 +89,44 @@ export class ProcessorService {
     await Promise.all(
       manifest.automation.map(async (automation) => {
         const { rules, request } = automation;
-        const data = { ...metrics, block };
-        const isConditionSatisfied = jsonLogic.apply(rules, data);
+        const isConditionSatisfied = this.checkCondition(block, rules, metrics);
+
+        const meta = {
+          manifestName: manifest.name,
+          automationName: automation.name,
+        };
 
         if (isConditionSatisfied) {
-          this.logger.log('Automation condition is satisfied', {
-            manifestName: manifest.name,
-            automationName: automation.name,
-          });
+          this.logger.debug('Automation condition is satisfied', meta);
 
           try {
             await request();
           } catch (error) {
             this.logger.error(error);
           }
+        } else {
+          this.logger.debug('Automation condition is not satisfied', meta);
         }
       }),
     );
+  }
+
+  /**
+   * Check metric condition
+   * @param block current block info
+   * @param rules json logic rules
+   * @param metrics collected metrics
+   */
+  public checkCondition(
+    block: Block,
+    rules?: jsonLogic.RulesLogic,
+    metrics?: Record<string, MetricRequestResult>,
+  ): boolean {
+    if (!rules) return true;
+
+    const data = { ...metrics, block };
+    const isConditionSatisfied = jsonLogic.apply(rules, data);
+
+    return isConditionSatisfied;
   }
 }
