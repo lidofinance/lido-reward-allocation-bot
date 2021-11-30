@@ -46,9 +46,8 @@ export class EnvironmentVariables {
   @IsNotEmpty()
   RPC_URL: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  @IsHexadecimal()
   WALLET_PRIVATE_KEY: string;
 
   @IsOptional()
