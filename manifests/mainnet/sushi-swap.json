@@ -30,7 +30,7 @@
   ],
   "automation": [
     {
-      "name": "startNextPeriodCallTotal",
+      "name": "startNextPeriodCall",
       "rules": {
         "and": [
           { "==": [{ "var": "isPeriodFinished" }, true] },
