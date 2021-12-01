@@ -1,3 +1,12 @@
+## [1.3.1](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.3.0...1.3.1) (2021-12-01)
+
+
+### Bug Fixes
+
+* label inc ([3798352](https://github.com/lidofinance/lido-reward-allocation-bot/commit/379835254a29e3bfa07b4efb14c195f040f74b14))
+
+
+
 # [1.3.0](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.1.0...1.3.0) (2021-12-01)
 
 
