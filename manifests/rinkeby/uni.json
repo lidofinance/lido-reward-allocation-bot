@@ -22,7 +22,7 @@
   ],
   "automation": [
     {
-      "name": "approve",
+      "name": "startNextPeriodCall",
       "rules": {
         "and": [
           { ">": [{ "var": "tokenBalance" }, 1e18] },
@@ -31,9 +31,9 @@
       },
       "request": {
         "type": "contractMethodSignedCall",
-        "address": "0xb07dE0148b53E5ec7Bb73e16016bB4D3fC71F0ca",
-        "method": "function approve(address, uint256)",
-        "args": ["0xD74cfebDbfAF43e304CB82A0Fa566E24a234b5F7", 1e9]
+        "address": "0xD74cfebDbfAF43e304CB82A0Fa566E24a234b5F7",
+        "method": "function notifyRewardAmount(uint256, address)",
+        "args": [1, "0x0d54195D55385824f7A2d2B9045285cf3b489E95"]
       }
     }
   ]
