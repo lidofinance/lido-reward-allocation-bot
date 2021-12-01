@@ -1,5 +1,5 @@
 {
-  "name": "Balancer v2 Liquidity Farming",
+  "name": "Balancer v2",
   "version": "1.0.0",
   "metrics": [
     {
@@ -11,7 +11,7 @@
       }
     },
     {
-      "name": "tokenBalance",
+      "name": "contractTokenBalance",
       "request": {
         "type": "contractMethodCall",
         "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",

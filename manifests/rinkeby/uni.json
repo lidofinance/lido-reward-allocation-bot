@@ -1,22 +1,31 @@
 {
-  "name": "Uniswap Test Rewards",
+  "name": "Test Rewards",
   "version": "1.0.0",
   "metrics": [
     {
       "name": "periodFinishUnix",
       "request": {
         "type": "contractMethodCall",
-        "address": "0xD74cfebDbfAF43e304CB82A0Fa566E24a234b5F7",
+        "address": "0xa6CB5521E4caD1F9DBf4eb4CdF99393778664531",
         "method": "function periodFinish() view returns (uint256)"
       }
     },
     {
-      "name": "tokenBalance",
+      "name": "contractTokenBalance",
       "request": {
         "type": "contractMethodCall",
         "address": "0xbfcb02cf3df4f36ab8185469834e0e00a5fc6053",
         "method": "function balanceOf(address) view returns (uint256)",
-        "args": ["0xD74cfebDbfAF43e304CB82A0Fa566E24a234b5F7"]
+        "args": ["0xa6CB5521E4caD1F9DBf4eb4CdF99393778664531"]
+      }
+    },
+    {
+      "name": "managerTokenBalance",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0xbfcb02cf3df4f36ab8185469834e0e00a5fc6053",
+        "method": "function balanceOf(address) view returns (uint256)",
+        "args": ["0x094F2cD18C5DE3956edFBB936f6F355092b43359"]
       }
     }
   ],
@@ -25,15 +34,15 @@
       "name": "startNextPeriodCall",
       "rules": {
         "and": [
-          { ">": [{ "var": "tokenBalance" }, 1e18] },
-          { "==": [{ "%": [{ "var": "block.number" }, 300] }, 0] }
+          { ">": [{ "var": "managerTokenBalance" }, 0] },
+          { ">": [{ "var": "block.timestamp" }, { "var": "periodFinishUnix" }] }
         ]
       },
       "request": {
         "type": "contractMethodSignedCall",
-        "address": "0xD74cfebDbfAF43e304CB82A0Fa566E24a234b5F7",
+        "address": "0xa6CB5521E4caD1F9DBf4eb4CdF99393778664531",
         "method": "function notifyRewardAmount(uint256, address)",
-        "args": [1, "0x0d54195D55385824f7A2d2B9045285cf3b489E95"]
+        "args": [1, "0x094F2cD18C5DE3956edFBB936f6F355092b43359"]
       }
     }
   ]

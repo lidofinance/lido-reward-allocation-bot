@@ -1,5 +1,5 @@
 {
-  "name": "Curve Liquidity Farming",
+  "name": "Curve",
   "version": "1.0.0",
   "metrics": [
     {
@@ -19,12 +19,21 @@
       }
     },
     {
-      "name": "tokenBalance",
+      "name": "contractTokenBalance",
       "request": {
         "type": "contractMethodCall",
         "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
         "method": "function balanceOf(address) view returns (uint256)",
         "args": ["0x99ac10631F69C753DDb595D074422a0922D9056B"]
+      }
+    },
+    {
+      "name": "managerTokenBalance",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
+        "method": "function balanceOf(address) view returns (uint256)",
+        "args": ["0x753D5167C31fBEB5b49624314d74A957Eb271709"]
       }
     }
   ],
@@ -34,7 +43,7 @@
       "rules": {
         "and": [
           { "==": [{ "var": "isPeriodFinished" }, true] },
-          { ">": [{ "var": "tokenBalance" }, 1e18] }
+          { ">": [{ "var": "managerTokenBalance" }, 0] }
         ]
       },
       "request": {
