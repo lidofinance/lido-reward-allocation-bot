@@ -5,6 +5,7 @@ export interface TransactionStored {
 }
 
 export enum TransactionStatus {
+  confirmed = 'confirmed',
   pending = 'pending',
   timeout = 'timeout',
   error = 'error',

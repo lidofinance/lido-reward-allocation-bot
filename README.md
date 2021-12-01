@@ -89,7 +89,7 @@ Reward programs are described in the files in the [manifests directory](/manifes
   ],
   "automation": [
     {
-      "name": "startNextPeriodCallTotal",
+      "name": "startNextPeriodCall",
       "type": "counter",
       "rules": {
         "and": [

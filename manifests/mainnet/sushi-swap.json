@@ -1,5 +1,5 @@
 {
-  "name": "SushiSwap Liquidity Farming",
+  "name": "SushiSwap",
   "version": "1.0.0",
   "metrics": [
     {
@@ -19,7 +19,16 @@
       }
     },
     {
-      "name": "tokenBalance",
+      "name": "contractTokenBalance",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
+        "method": "function balanceOf(address) view returns (uint256)",
+        "args": ["0x75ff3dd673ef9fc459a52e1054db5df2a1101212"]
+      }
+    },
+    {
+      "name": "managerTokenBalance",
       "request": {
         "type": "contractMethodCall",
         "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
@@ -30,11 +39,11 @@
   ],
   "automation": [
     {
-      "name": "startNextPeriodCallTotal",
+      "name": "startNextPeriodCall",
       "rules": {
         "and": [
           { "==": [{ "var": "isPeriodFinished" }, true] },
-          { ">": [{ "var": "tokenBalance" }, 1e18] }
+          { ">": [{ "var": "managerTokenBalance" }, 0] }
         ]
       },
       "request": {

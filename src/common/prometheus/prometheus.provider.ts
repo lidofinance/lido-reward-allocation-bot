@@ -11,6 +11,7 @@ import {
   METRIC_MANIFEST_REQUEST_COUNTER,
   METRIC_MANIFEST_REQUEST_DURATION,
   METRIC_MANIFEST_REQUEST_RESULT,
+  METRIC_TRANSACTION_COUNTER,
 } from './prometheus.constants';
 
 export const PrometheusBuildInfoGaugeProvider = makeCounterProvider({
@@ -54,4 +55,10 @@ export const PrometheusManifestRequestsCounterProvider = makeCounterProvider({
   name: METRIC_MANIFEST_REQUEST_COUNTER,
   help: 'Number of manifest metric requests',
   labelNames: ['manifestName', 'manifestVersion', 'metric', 'status'],
+});
+
+export const PrometheusTransactionGaugeProvider = makeGaugeProvider({
+  name: METRIC_TRANSACTION_COUNTER,
+  help: 'Number of transaction',
+  labelNames: ['status'],
 });

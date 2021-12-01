@@ -7,6 +7,7 @@ import {
   PrometheusManifestRequestsHistogramProvider,
   PrometheusManifestRequestsResultGaugeProvider,
   PrometheusManifestRequestsCounterProvider,
+  PrometheusTransactionGaugeProvider,
 } from './prometheus.provider';
 import { METRICS_PREFIX, METRICS_URL } from './prometheus.constants';
 import { PrometheusController } from './prometheus.controller';
@@ -28,6 +29,7 @@ const providers = [
   PrometheusManifestRequestsHistogramProvider,
   PrometheusManifestRequestsResultGaugeProvider,
   PrometheusManifestRequestsCounterProvider,
+  PrometheusTransactionGaugeProvider,
 ];
 
 PrometheusModule.global = true;
