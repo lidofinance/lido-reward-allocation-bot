@@ -1,7 +1,10 @@
+import { Gauge } from 'prom-client';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { ContractTransaction } from '@ethersproject/contracts';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import { ConfigService } from 'common/config';
+import { METRIC_TRANSACTION_COUNTER } from 'common/prometheus';
 import { TransactionStored, TransactionStatus } from './interfaces';
 import { WAIT_BLOCKS_NUMBER } from './transaction.constants';
 
@@ -10,6 +13,9 @@ export class TransactionService {
   constructor(
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private logger: LoggerService,
+
+    @InjectMetric(METRIC_TRANSACTION_COUNTER)
+    private transactionCount: Gauge<string>,
 
     private configService: ConfigService,
   ) {}
@@ -102,6 +108,8 @@ export class TransactionService {
     const { hash, nonce } = tx;
     const txMeta = { hash, nonce };
 
+    this.transactionCount.labels({ status: TransactionStatus.pending }).inc();
+
     this.logger.warn(
       'Transaction sent, waiting for block confirmation',
       txMeta,
@@ -120,10 +128,16 @@ export class TransactionService {
       const { blockNumber, blockHash } = await tx.wait(WAIT_BLOCKS_NUMBER);
       const blockMeta = { blockNumber, blockHash };
 
+      this.transactionCount
+        .labels({ status: TransactionStatus.confirmed })
+        .inc();
+
       this.logger.warn('Block confirmation received', blockMeta);
     } catch (error) {
+      this.transactionCount.labels({ status: TransactionStatus.error }).inc();
       this.logger.error(error);
     } finally {
+      this.transactionCount.labels({ status: TransactionStatus.pending }).dec();
       clearTimeout(timeoutTimer);
       this.removeFromStorage(txKey);
     }
@@ -134,6 +148,8 @@ export class TransactionService {
    * @param txKey storage tx key
    */
   public async handleError(txKey: string): Promise<void> {
+    this.transactionCount.labels({ status: TransactionStatus.error }).inc();
+
     const errorTimeoutSeconds = this.configService.get(
       'ERROR_TX_TIMEOUT_SECONDS',
       { infer: true },
