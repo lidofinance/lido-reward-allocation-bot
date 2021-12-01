@@ -108,7 +108,7 @@ export class TransactionService {
     const { hash, nonce } = tx;
     const txMeta = { hash, nonce };
 
-    this.transactionCount.labels({ status: TransactionStatus.pending }).inc();
+    this.transactionCount.inc({ status: TransactionStatus.pending });
 
     this.logger.warn(
       'Transaction sent, waiting for block confirmation',
@@ -128,16 +128,13 @@ export class TransactionService {
       const { blockNumber, blockHash } = await tx.wait(WAIT_BLOCKS_NUMBER);
       const blockMeta = { blockNumber, blockHash };
 
-      this.transactionCount
-        .labels({ status: TransactionStatus.confirmed })
-        .inc();
-
+      this.transactionCount.inc({ status: TransactionStatus.confirmed });
       this.logger.warn('Block confirmation received', blockMeta);
     } catch (error) {
-      this.transactionCount.labels({ status: TransactionStatus.error }).inc();
+      this.transactionCount.inc({ status: TransactionStatus.error });
       this.logger.error(error);
     } finally {
-      this.transactionCount.labels({ status: TransactionStatus.pending }).dec();
+      this.transactionCount.dec({ status: TransactionStatus.pending });
       clearTimeout(timeoutTimer);
       this.removeFromStorage(txKey);
     }
