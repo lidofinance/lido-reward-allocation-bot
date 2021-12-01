@@ -66,7 +66,7 @@ Reward programs are described in the files in the [manifests directory](/manifes
 
 ```json
 {
-  "name": "1inch v2 Liquidity Farming",
+  "name": "1inch v2",
   "version": "1.0.0",
   "metrics": [
     {
@@ -78,7 +78,7 @@ Reward programs are described in the files in the [manifests directory](/manifes
       }
     },
     {
-      "name": "tokenBalance",
+      "name": "managerTokenBalance",
       "request": {
         "type": "contractMethodCall",
         "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
@@ -90,11 +90,10 @@ Reward programs are described in the files in the [manifests directory](/manifes
   "automation": [
     {
       "name": "startNextPeriodCall",
-      "type": "counter",
       "rules": {
         "and": [
           { "==": [{ "var": "isPeriodFinished" }, true] },
-          { ">": [{ "var": "tokenBalance" }, 1e18] }
+          { ">": [{ "var": "managerTokenBalance" }, 0] }
         ]
       },
       "request": {
