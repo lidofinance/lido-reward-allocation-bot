@@ -4,7 +4,6 @@ import {
   IsNumber,
   IsString,
   IsOptional,
-  IsNotEmpty,
   validateSync,
   Min,
 } from 'class-validator';
@@ -41,8 +40,8 @@ export class EnvironmentVariables {
   @Transform(({ value }) => value || LogFormat.json)
   LOG_FORMAT!: LogFormat;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   RPC_URL!: string;
 
   @IsOptional()
