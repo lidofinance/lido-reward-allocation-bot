@@ -17,7 +17,7 @@ import {
 export const PrometheusBuildInfoGaugeProvider = makeCounterProvider({
   name: METRIC_BUILD_INFO,
   help: 'Build information',
-  labelNames: ['name', 'version', 'network', 'address'] as const,
+  labelNames: ['name', 'version', 'env', 'network', 'address'] as const,
 });
 
 export const PrometheusRPCRequestsHistogramProvider = makeHistogramProvider({
