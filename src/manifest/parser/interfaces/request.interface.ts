@@ -18,7 +18,7 @@ export interface ContractMethodSignedCall extends ContractMethodCallCommon {
   type: 'contractMethodSignedCall';
 }
 
-export type MetricRequest<T extends unknown = unknown> = (
+export type MetricRequest<T = unknown> = (
   payload?: MetricRequestPayload,
 ) => Promise<T>;
 

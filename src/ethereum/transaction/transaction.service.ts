@@ -115,10 +115,9 @@ export class TransactionService {
       txMeta,
     );
 
-    const resubmitTimeoutSeconds = this.configService.get(
-      'RESUBMIT_TX_TIMEOUT_SECONDS',
-      { infer: true },
-    );
+    const resubmitTimeoutSeconds =
+      this.configService.get('RESUBMIT_TX_TIMEOUT_SECONDS', { infer: true }) ??
+      0;
 
     const timeoutTimer = setTimeout(() => {
       this.setStatus(txKey, TransactionStatus.timeout);
@@ -147,10 +146,8 @@ export class TransactionService {
   public async handleError(txKey: string): Promise<void> {
     this.transactionCount.labels({ status: TransactionStatus.error }).inc();
 
-    const errorTimeoutSeconds = this.configService.get(
-      'ERROR_TX_TIMEOUT_SECONDS',
-      { infer: true },
-    );
+    const errorTimeoutSeconds =
+      this.configService.get('ERROR_TX_TIMEOUT_SECONDS', { infer: true }) ?? 0;
 
     setTimeout(() => {
       this.removeFromStorage(txKey);

@@ -8,5 +8,5 @@ export const ConfigModule = ConfigModuleSource.forRoot({
   cache: true,
 });
 
-ConfigModule.providers.push(ConfigService);
-ConfigModule.exports.push(ConfigService);
+ConfigModule.providers?.push(ConfigService);
+ConfigModule.exports?.push(ConfigService);
