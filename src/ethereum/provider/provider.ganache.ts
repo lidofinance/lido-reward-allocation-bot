@@ -1,29 +1,17 @@
-import { provider } from 'ganache';
-import { Formatter, Web3Provider } from '@ethersproject/providers';
+import { Formatter, StaticJsonRpcProvider } from '@ethersproject/providers';
 import { DynamicModule, Module } from '@nestjs/common';
-import { CHAINS } from '@lido-sdk/constants';
 import { ConfigService } from 'common/config';
 import { RpcBatchProvider, RpcProvider } from './interfaces';
 import { ProviderService } from './provider.service';
 
+export const GANACHE_PORT = 8545;
+export const GANACHE_URL = `http://127.0.0.1:${GANACHE_PORT}`;
+
 const getProviderFactory = () => {
-  return async (configService: ConfigService): Promise<RpcProvider> => {
-    const rpcUrl = configService.get('RPC_URL', { infer: true });
-
-    const options = {
-      chainId: CHAINS.Mainnet,
-      chainIdRpc: CHAINS.Mainnet,
-      networkId: CHAINS.Mainnet,
-      fork: rpcUrl,
-    };
-
+  return async (): Promise<RpcProvider> => {
     class FormatterGanache extends Formatter {
       blockTag(blockTag: any): any {
-        if (
-          typeof blockTag === 'object' &&
-          blockTag != null &&
-          ('blockNumber' in blockTag || 'blockHash' in blockTag)
-        ) {
+        if (typeof blockTag === 'object' && blockTag != null) {
           return 'latest';
         }
 
@@ -31,7 +19,7 @@ const getProviderFactory = () => {
       }
     }
 
-    class Provider extends Web3Provider {
+    class Provider extends StaticJsonRpcProvider {
       static _formatter: Formatter | null = null;
 
       static getFormatter(): Formatter {
@@ -42,11 +30,11 @@ const getProviderFactory = () => {
       }
 
       clone() {
-        return new Provider(provider(options));
+        return new Provider(GANACHE_URL);
       }
     }
 
-    return new Provider(provider(options));
+    return new Provider(GANACHE_URL);
   };
 };
 

@@ -20,11 +20,11 @@ import { ContractTransaction } from '@ethersproject/contracts';
 import { startServer } from './server';
 
 const MANIFESTS_DIR = `${__dirname}/../manifests/mainnet/`;
-const MANIFESTS_FILE = `sushi-swap.json`;
+const MANIFESTS_FILE = `curve.json`;
 
-const START_BLOCK = 13625895;
+const START_BLOCK = 13203786;
 
-describe('Sushi swap', () => {
+describe('Curve', () => {
   let configService: ConfigService;
   let providerService: ProviderService;
   let loaderService: LoaderService;
