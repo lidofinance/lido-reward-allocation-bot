@@ -139,6 +139,6 @@ describe.each([
       expect(newMetrics).toEqual(
         expect.objectContaining({ isPeriodFinished: false }),
       );
-    });
+    }, 10_000);
   });
 });
