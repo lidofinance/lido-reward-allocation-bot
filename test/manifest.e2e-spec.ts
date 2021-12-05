@@ -5,7 +5,7 @@ import { WeiPerEther } from '@ethersproject/constants';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { PrometheusModule } from '../src/common/prometheus';
 import { LoggerModule } from '../src/common/logger';
-import { ConfigModule, ConfigService } from '../src/common/config';
+import { ConfigModule } from '../src/common/config';
 import {
   ProviderService,
   GanacheProviderModule,
@@ -20,12 +20,12 @@ import { ContractTransaction } from '@ethersproject/contracts';
 import { startServer } from './server';
 
 const MANIFESTS_DIR = `${__dirname}/../manifests/mainnet/`;
-const MANIFESTS_FILE = `1inch-v2.json`;
 
-const START_BLOCK = 13675709;
-
-describe('1inch v2', () => {
-  let configService: ConfigService;
+describe.each([
+  { name: 'Curve', fileName: 'curve.json', startBlock: 13203786 },
+  { name: 'Sushi Swap', fileName: 'sushi-swap.json', startBlock: 13625895 },
+  { name: '1inch v2', fileName: '1inch-v2.json', startBlock: 13675709 },
+])('$name', ({ fileName, startBlock }) => {
   let providerService: ProviderService;
   let loaderService: LoaderService;
   let processorService: ProcessorService;
@@ -36,7 +36,7 @@ describe('1inch v2', () => {
   let server: any;
 
   beforeAll(() => {
-    server = startServer(START_BLOCK);
+    server = startServer(startBlock);
     server.listen(GANACHE_PORT);
   });
 
@@ -56,7 +56,6 @@ describe('1inch v2', () => {
       ],
     }).compile();
 
-    configService = moduleRef.get(ConfigService);
     providerService = moduleRef.get(ProviderService);
     loaderService = moduleRef.get(LoaderService);
     processorService = moduleRef.get(ProcessorService);
@@ -94,7 +93,7 @@ describe('1inch v2', () => {
   });
 
   describe('should start new period', () => {
-    const path = `${MANIFESTS_DIR}${MANIFESTS_FILE}`;
+    const path = `${MANIFESTS_DIR}${fileName}`;
     let manifest: any;
     let currentBlock: Block;
     let currentMetrics: Record<string, any>;
@@ -103,7 +102,7 @@ describe('1inch v2', () => {
       currentBlock = await providerService.getBlock();
 
       expect(currentBlock).toEqual(
-        expect.objectContaining({ number: START_BLOCK + 1 }),
+        expect.objectContaining({ number: startBlock + 1 }),
       );
     });
 
