@@ -15,6 +15,7 @@ import { ProcessorService } from 'manifest/processor';
 import { ProviderService } from 'ethereum/provider';
 import { WalletService } from 'ethereum/wallet';
 import { APP_NAME, APP_VERSION } from './app.constants';
+import { ConfigService } from 'common/config';
 
 @Injectable()
 export class AppService implements OnModuleInit {
@@ -29,16 +30,18 @@ export class AppService implements OnModuleInit {
     private providerService: ProviderService,
     private processorService: ProcessorService,
     private walletService: WalletService,
+    private configService: ConfigService,
   ) {}
 
   async onModuleInit(): Promise<void> {
     const address = this.walletService.address;
     const network = await this.providerService.getNetworkName();
+    const env = this.configService.get('NODE_ENV', { infer: true });
     const version = APP_VERSION;
     const name = APP_NAME;
 
-    this.buildInfo.labels({ network, address, name, version }).inc();
-    this.logger.log('Init app', { network, address, name, version });
+    this.buildInfo.labels({ env, network, address, name, version }).inc();
+    this.logger.log('Init app', { env, network, address, name, version });
 
     const manifests = await this.loaderService.loadManifests();
 

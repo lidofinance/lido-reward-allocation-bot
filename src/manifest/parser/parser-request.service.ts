@@ -72,7 +72,7 @@ export class ParserRequestService {
         storedTx?.status === TransactionStatus.error ||
         storedTx?.status === TransactionStatus.pending
       ) {
-        this.logger.debug('Transaction sent earlier, waiting', storedTx);
+        this.logger.debug?.('Transaction sent earlier, waiting', storedTx);
         return;
       }
 

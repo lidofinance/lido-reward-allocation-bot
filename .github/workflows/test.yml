@@ -17,3 +17,8 @@ jobs:
         run: yarn lint
       - name: Run tests
         run: yarn test
+      - name: Run e2e tests
+        run: yarn test:e2e
+        env:
+          RPC_URL: ${{ secrets.TESTS_RPC_URL }}
+          WALLET_PRIVATE_KEY: ${{ secrets.TESTS_PRIVATE_KEY }}

@@ -4,7 +4,6 @@ import {
   IsNumber,
   IsString,
   IsOptional,
-  IsNotEmpty,
   validateSync,
   Min,
 } from 'class-validator';
@@ -25,7 +24,7 @@ export class EnvironmentVariables {
   @IsNumber()
   @Min(1)
   @Transform(toNumber({ defaultValue: 3000 }))
-  PORT: number;
+  PORT!: number;
 
   @IsOptional()
   @IsString()
@@ -34,32 +33,32 @@ export class EnvironmentVariables {
   @IsOptional()
   @IsEnum(LogLevel)
   @Transform(({ value }) => value || LogLevel.info)
-  LOG_LEVEL: LogLevel;
+  LOG_LEVEL!: LogLevel;
 
   @IsOptional()
   @IsEnum(LogFormat)
   @Transform(({ value }) => value || LogFormat.json)
-  LOG_FORMAT: LogFormat;
-
-  @IsString()
-  @IsNotEmpty()
-  RPC_URL: string;
+  LOG_FORMAT!: LogFormat;
 
   @IsOptional()
   @IsString()
-  WALLET_PRIVATE_KEY: string;
+  RPC_URL!: string;
+
+  @IsOptional()
+  @IsString()
+  WALLET_PRIVATE_KEY: string | undefined;
 
   @IsOptional()
   @IsNumber()
   @Min(30)
   @Transform(toNumber({ defaultValue: 300 }))
-  RESUBMIT_TX_TIMEOUT_SECONDS: number;
+  RESUBMIT_TX_TIMEOUT_SECONDS!: number;
 
   @IsOptional()
   @IsNumber()
   @Min(30)
   @Transform(toNumber({ defaultValue: 120 }))
-  ERROR_TX_TIMEOUT_SECONDS: number;
+  ERROR_TX_TIMEOUT_SECONDS!: number;
 }
 
 export function validate(config: Record<string, unknown>) {

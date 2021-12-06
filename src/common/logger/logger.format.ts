@@ -25,7 +25,7 @@ export const simple = (configService: ConfigService) => {
 
 const cleanSecrets = winston.format((info, opts) => {
   info.message = opts.secrets.reduce((result, secret) => {
-    return result.replace(secret, '<removed>');
+    return secret ? result.replace(secret, '<removed>') : result;
   }, info.message);
 
   return info;

@@ -97,7 +97,7 @@ export class ProcessorService {
         };
 
         if (isConditionSatisfied) {
-          this.logger.debug('Automation condition is satisfied', meta);
+          this.logger.debug?.('Automation condition is satisfied', meta);
 
           try {
             await request();
@@ -105,7 +105,7 @@ export class ProcessorService {
             this.logger.error(error);
           }
         } else {
-          this.logger.debug('Automation condition is not satisfied', meta);
+          this.logger.debug?.('Automation condition is not satisfied', meta);
         }
       }),
     );
