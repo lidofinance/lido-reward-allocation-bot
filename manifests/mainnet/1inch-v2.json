@@ -42,7 +42,7 @@
       "name": "startNextPeriodCall",
       "rules": {
         "and": [
-          { "==": [{ "var": "isPeriodFinished" }, true] },
+          { "===": [{ "var": "isPeriodFinished" }, true] },
           { ">": [{ "var": "managerTokenBalance" }, 0] }
         ]
       },

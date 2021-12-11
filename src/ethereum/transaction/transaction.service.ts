@@ -18,7 +18,12 @@ export class TransactionService {
     private transactionCount: Gauge<string>,
 
     private configService: ConfigService,
-  ) {}
+  ) {
+    this.transactionCount.set({ status: TransactionStatus.error }, 0);
+    this.transactionCount.set({ status: TransactionStatus.pending }, 0);
+    this.transactionCount.set({ status: TransactionStatus.confirmed }, 0);
+    this.transactionCount.set({ status: TransactionStatus.timeout }, 0);
+  }
 
   private txStorage: Record<string, TransactionStored> = {};
 
