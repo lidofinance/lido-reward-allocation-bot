@@ -1,13 +1,21 @@
 {
   "name": "Balancer v2",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "metrics": [
+    {
+      "name": "isPeriodFinished",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0x1220ccCDc9BBA5CF626a84586C74D6f940932342",
+        "method": "function is_rewards_period_finished() view returns (bool)"
+      }
+    },
     {
       "name": "periodFinishUnix",
       "request": {
         "type": "contractMethodCall",
-        "address": "0x1dD909cDdF3dbe61aC08112dC0Fdf2Ab949f79D8",
-        "method": "function period_finish() view returns (uint256)"
+        "address": "0x55c8De1Ac17C1A937293416C9BCe5789CbBf61d1",
+        "method": "function periodFinish() view returns (uint256)"
       }
     },
     {
@@ -16,9 +24,33 @@
         "type": "contractMethodCall",
         "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
         "method": "function balanceOf(address) view returns (uint256)",
-        "args": ["0x1dD909cDdF3dbe61aC08112dC0Fdf2Ab949f79D8"]
+        "args": ["0x55c8De1Ac17C1A937293416C9BCe5789CbBf61d1"]
+      }
+    },
+    {
+      "name": "managerTokenBalance",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
+        "method": "function balanceOf(address) view returns (uint256)",
+        "args": ["0x1220ccCDc9BBA5CF626a84586C74D6f940932342"]
       }
     }
   ],
-  "automation": []
+  "automation": [
+    {
+      "name": "startNextPeriodCall",
+      "rules": {
+        "and": [
+          { "===": [{ "var": "isPeriodFinished" }, true] },
+          { ">": [{ "var": "managerTokenBalance" }, 0] }
+        ]
+      },
+      "request": {
+        "type": "contractMethodSignedCall",
+        "address": "0x1220ccCDc9BBA5CF626a84586C74D6f940932342",
+        "method": "function start_next_rewards_period()"
+      }
+    }
+  ]
 }

@@ -1,0 +1,24 @@
+{
+  "name": "Balancer v1",
+  "version": "1.0.0",
+  "metrics": [
+    {
+      "name": "periodFinishUnix",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0x1dD909cDdF3dbe61aC08112dC0Fdf2Ab949f79D8",
+        "method": "function period_finish() view returns (uint256)"
+      }
+    },
+    {
+      "name": "contractTokenBalance",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
+        "method": "function balanceOf(address) view returns (uint256)",
+        "args": ["0x1dD909cDdF3dbe61aC08112dC0Fdf2Ab949f79D8"]
+      }
+    }
+  ],
+  "automation": []
+}
