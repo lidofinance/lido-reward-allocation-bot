@@ -1,3 +1,12 @@
+## [1.4.2](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.4.1...1.4.2) (2022-01-27)
+
+
+### Bug Fixes
+
+* add manifest name suffix ([02045b8](https://github.com/lidofinance/lido-reward-allocation-bot/commit/02045b8cbf46f7b7ab346e2c99f512601c5d8a93))
+
+
+
 ## [1.4.1](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.4.0...1.4.1) (2021-12-11)
 
 
