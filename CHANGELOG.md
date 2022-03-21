@@ -1,3 +1,13 @@
+# [1.6.0](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.5.0...1.6.0) (2022-03-21)
+
+
+### Features
+
+* remove 1inch program ([174cbd7](https://github.com/lidofinance/lido-reward-allocation-bot/commit/174cbd7ba9f4fdad57f2afc32191c181ee76a6c0))
+* remove e2e test for 1inch ([dbc9adf](https://github.com/lidofinance/lido-reward-allocation-bot/commit/dbc9adf16ab272871582cec39477781cb205163c))
+
+
+
 # [1.5.0](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.4.2...1.5.0) (2022-01-31)
 
 
@@ -41,15 +51,6 @@
 ### Features
 
 * env in build info ([68b5c4e](https://github.com/lidofinance/lido-reward-allocation-bot/commit/68b5c4e46564bf46b193b72f472c3002615d819b))
-
-
-
-## [1.3.1](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.3.0...1.3.1) (2021-12-01)
-
-
-### Bug Fixes
-
-* label inc ([3798352](https://github.com/lidofinance/lido-reward-allocation-bot/commit/379835254a29e3bfa07b4efb14c195f040f74b14))
 
 
 
