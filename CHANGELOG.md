@@ -1,3 +1,31 @@
+# [1.6.0](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.5.0...1.6.0) (2022-03-21)
+
+
+### Features
+
+* remove 1inch program ([174cbd7](https://github.com/lidofinance/lido-reward-allocation-bot/commit/174cbd7ba9f4fdad57f2afc32191c181ee76a6c0))
+* remove e2e test for 1inch ([dbc9adf](https://github.com/lidofinance/lido-reward-allocation-bot/commit/dbc9adf16ab272871582cec39477781cb205163c))
+
+
+
+# [1.5.0](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.4.2...1.5.0) (2022-01-31)
+
+
+### Features
+
+* remove balancer v1 ([9114840](https://github.com/lidofinance/lido-reward-allocation-bot/commit/9114840f89d37c1ff4bfa4f0f206a3554acf9f93))
+
+
+
+## [1.4.2](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.4.1...1.4.2) (2022-01-27)
+
+
+### Bug Fixes
+
+* add manifest name suffix ([02045b8](https://github.com/lidofinance/lido-reward-allocation-bot/commit/02045b8cbf46f7b7ab346e2c99f512601c5d8a93))
+
+
+
 ## [1.4.1](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.4.0...1.4.1) (2021-12-11)
 
 
@@ -23,35 +51,6 @@
 ### Features
 
 * env in build info ([68b5c4e](https://github.com/lidofinance/lido-reward-allocation-bot/commit/68b5c4e46564bf46b193b72f472c3002615d819b))
-
-
-
-## [1.3.1](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.3.0...1.3.1) (2021-12-01)
-
-
-### Bug Fixes
-
-* label inc ([3798352](https://github.com/lidofinance/lido-reward-allocation-bot/commit/379835254a29e3bfa07b4efb14c195f040f74b14))
-
-
-
-# [1.3.0](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.1.0...1.3.0) (2021-12-01)
-
-
-### Bug Fixes
-
-* block subscribtion ([c0bda90](https://github.com/lidofinance/lido-reward-allocation-bot/commit/c0bda90b9388bec426d7cc8dce5514da9d254cc0))
-* env validation linter ([ede1a53](https://github.com/lidofinance/lido-reward-allocation-bot/commit/ede1a530058dcddb1308b235e19fff00f6daf8ab))
-* manifests ([6835911](https://github.com/lidofinance/lido-reward-allocation-bot/commit/68359114fd2f04b568e7dce2c9a68a8a9ef856b5))
-* rename automation metric ([05d2002](https://github.com/lidofinance/lido-reward-allocation-bot/commit/05d20024f9245387feb20579524614d99e5616d0))
-* update uni contract call ([d350840](https://github.com/lidofinance/lido-reward-allocation-bot/commit/d3508403f47f38634e8715a163893bd0322da411))
-
-
-### Features
-
-* add tx metric ([3e18c64](https://github.com/lidofinance/lido-reward-allocation-bot/commit/3e18c6418a8689f59a116004f1884a0b6bc1bc1a))
-* goerli support ([562e2cb](https://github.com/lidofinance/lido-reward-allocation-bot/commit/562e2cbd9f70b6bf1c3b5dabadc6299c6183195c))
-* update version ([613279a](https://github.com/lidofinance/lido-reward-allocation-bot/commit/613279a8c1c27352a6cb75d61ee31f249d4e4b4c))
 
 
 
