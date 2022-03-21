@@ -24,8 +24,7 @@ const MANIFESTS_DIR = `${__dirname}/../manifests/mainnet/`;
 describe.each([
   { name: 'Curve', fileName: 'curve.json', startBlock: 13203786 },
   { name: 'Sushi Swap', fileName: 'sushi-swap.json', startBlock: 13625895 },
-  { name: '1inch v2', fileName: '1inch-v2.json', startBlock: 13675709 },
-  { name: 'Balancer v2', fileName: 'balancer-v2.json', startBlock: 14106041 },
+  { name: 'Balancer v2', fileName: 'balancer-v2.json', startBlock: 14246088 },
 ])('$name', ({ fileName, startBlock }) => {
   let providerService: ProviderService;
   let loaderService: LoaderService;
