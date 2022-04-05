@@ -5,15 +5,16 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { PrometheusModule } from 'common/prometheus';
 import { ConfigModule } from 'common/config';
 import { LoggerModule } from 'common/logger';
-import { MockProviderModule, ProviderService } from 'ethereum/provider';
+import { MockProviderModule } from 'ethereum/provider';
 import { WalletModule } from 'ethereum/wallet';
 import { WALLET_PRIVATE_KEY } from './wallet.constants';
 import { WalletService } from './wallet.service';
+import { ExecutionService } from 'ethereum/execution';
 
 describe('WalletService', () => {
   const wallet = Wallet.createRandom();
   let walletService: WalletService;
-  let providerService: ProviderService;
+  let providerService: ExecutionService;
   let loggerService: LoggerService;
 
   beforeEach(async () => {
@@ -31,7 +32,7 @@ describe('WalletService', () => {
       .compile();
 
     walletService = moduleRef.get(WalletService);
-    providerService = moduleRef.get(ProviderService);
+    providerService = moduleRef.get(ExecutionService);
     loggerService = moduleRef.get(WINSTON_MODULE_NEST_PROVIDER);
 
     jest.spyOn(loggerService, 'log').mockImplementation(() => undefined);

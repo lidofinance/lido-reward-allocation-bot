@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
+import { ExecutionService } from 'ethereum/execution/execution.service';
 import { ParserModule } from 'manifest/parser';
-import { ProcessorService } from './processor.service';
 
 @Module({
   imports: [ParserModule],
-  providers: [ProcessorService],
-  exports: [ProcessorService],
+  providers: [ExecutionService],
+  exports: [ExecutionService],
 })
 export class ProcessorModule {}
