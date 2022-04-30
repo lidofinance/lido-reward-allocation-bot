@@ -1,7 +1,8 @@
-name: test
+name: Tests and checks
 on: pull_request
 jobs:
   test:
+    name: App tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -22,3 +23,9 @@ jobs:
         env:
           RPC_URL: ${{ secrets.TESTS_RPC_URL }}
           WALLET_PRIVATE_KEY: ${{ secrets.TESTS_PRIVATE_KEY }}
+
+  security:
+    uses: lidofinance/linters/.github/workflows/security.yml@master
+  
+  docker:
+    uses: lidofinance/linters/.github/workflows/docker.yml@master
