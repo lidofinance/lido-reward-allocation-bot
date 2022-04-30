@@ -1,3 +1,17 @@
+# [1.8.0](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.7.0...1.8.0) (2022-04-30)
+
+
+### Bug Fixes
+
+* move balancer manifest from subdir ([86f38c5](https://github.com/lidofinance/lido-reward-allocation-bot/commit/86f38c55557c84b31d5f9a00b8ec3a575fe21131))
+
+
+### Features
+
+* Add security and dockerfile checks ([f944f7c](https://github.com/lidofinance/lido-reward-allocation-bot/commit/f944f7c78596a31c45168b3554759de1073e9d8d))
+
+
+
 # [1.7.0](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.6.0...1.7.0) (2022-04-13)
 
 
@@ -32,16 +46,6 @@
 ### Bug Fixes
 
 * add manifest name suffix ([02045b8](https://github.com/lidofinance/lido-reward-allocation-bot/commit/02045b8cbf46f7b7ab346e2c99f512601c5d8a93))
-
-
-
-## [1.4.1](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.4.0...1.4.1) (2021-12-11)
-
-
-### Bug Fixes
-
-* set default value for transaction count ([ffd5634](https://github.com/lidofinance/lido-reward-allocation-bot/commit/ffd5634dbe964ce739cdba72e73d3461d7465cc4))
-* strict check ([42d2343](https://github.com/lidofinance/lido-reward-allocation-bot/commit/42d2343947b8876fa4c2e3d0a45ccfcad056441a))
 
 
 
