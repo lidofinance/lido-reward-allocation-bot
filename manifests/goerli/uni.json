@@ -6,7 +6,7 @@
       "name": "periodFinishUnix",
       "request": {
         "type": "contractMethodCall",
-        "address": "0xa6CB5521E4caD1F9DBf4eb4CdF99393778664531",
+        "address": "0x05154cb2a73a4805443d3eb3ecf43e2dee854ca1",
         "method": "function periodFinish() view returns (uint256)"
       }
     },
@@ -14,16 +14,16 @@
       "name": "contractTokenBalance",
       "request": {
         "type": "contractMethodCall",
-        "address": "0xbfcb02cf3df4f36ab8185469834e0e00a5fc6053",
+        "address": "0x56340274fB5a72af1A3C6609061c451De7961Bd4",
         "method": "function balanceOf(address) view returns (uint256)",
-        "args": ["0xa6CB5521E4caD1F9DBf4eb4CdF99393778664531"]
+        "args": ["0x05154cb2a73a4805443d3eb3ecf43e2dee854ca1"]
       }
     },
     {
       "name": "managerTokenBalance",
       "request": {
         "type": "contractMethodCall",
-        "address": "0xbfcb02cf3df4f36ab8185469834e0e00a5fc6053",
+        "address": "0x56340274fB5a72af1A3C6609061c451De7961Bd4",
         "method": "function balanceOf(address) view returns (uint256)",
         "args": ["0x094F2cD18C5DE3956edFBB936f6F355092b43359"]
       }
@@ -40,7 +40,7 @@
       },
       "request": {
         "type": "contractMethodSignedCall",
-        "address": "0xa6CB5521E4caD1F9DBf4eb4CdF99393778664531",
+        "address": "0x05154cb2a73a4805443d3eb3ecf43e2dee854ca1",
         "method": "function notifyRewardAmount(uint256, address)",
         "args": [1, "0x094F2cD18C5DE3956edFBB936f6F355092b43359"]
       }
