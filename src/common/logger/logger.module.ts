@@ -1,9 +1,9 @@
 import { WinstonModule } from 'nest-winston';
 import { ConfigModule, ConfigService, LogFormat } from 'common/config';
 import * as winston from 'winston';
-import { ProviderService } from 'ethereum/provider';
 import { ModuleRef } from '@nestjs/core';
 import { json, simple } from './logger.format';
+import { ExecutionService } from 'ethereum/execution';
 
 export const LoggerModule = WinstonModule.forRootAsync({
   imports: [ConfigModule],
@@ -12,10 +12,11 @@ export const LoggerModule = WinstonModule.forRootAsync({
     level: configService.get('LOG_LEVEL', { infer: true }),
     defaultMeta: {
       get block() {
-        const providerService = moduleRef.get(ProviderService, {
+        const providerService = moduleRef.get(ExecutionService, {
           strict: false,
         });
-        return providerService.provider.blockNumber;
+      
+        return providerService.getBlockNumber();
       },
     },
     transports: [

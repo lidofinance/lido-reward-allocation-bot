@@ -11,10 +11,12 @@ import { WalletModule } from 'ethereum/wallet';
 import { LoaderModule } from 'manifest/loader';
 import { ProcessorModule } from 'manifest/processor';
 import { AppService } from './app.service';
+import { ExecutionModule } from 'ethereum/execution';
 
 @Module({
   imports: [
-    ProviderModule.forRoot(),
+    // ProviderModule.forRoot(),
+    ExecutionModule,
     PrometheusModule,
     LoggerModule,
     ConfigModule,

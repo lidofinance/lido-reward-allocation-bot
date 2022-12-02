@@ -1,6 +1,6 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { Module } from '@nestjs/common';
-import { ProviderService, RpcBatchProvider } from 'ethereum/provider';
+import { ExecutionService } from 'ethereum/execution';
 import { TransactionModule } from 'ethereum/transaction';
 import { WalletModule, WalletService } from 'ethereum/wallet';
 import { ParserMetricsService } from './parser-metric.service';
@@ -13,22 +13,16 @@ import { ParserService } from './parser.service';
     ParserService,
     ParserMetricsService,
     ParserRequestService,
-    {
-      provide: RpcBatchProvider,
-      useFactory(providerService: ProviderService) {
-        return providerService.getNewBatchProviderInstance();
-      },
-      inject: [ProviderService],
-    },
+    ExecutionService,
     {
       provide: Signer,
       useFactory(
         walletService: WalletService,
-        providerService: ProviderService,
+        providerService: ExecutionService,
       ) {
         return walletService.wallet.connect(providerService.provider);
       },
-      inject: [WalletService, ProviderService],
+      inject: [WalletService, ExecutionService],
     },
   ],
   exports: [ParserService],

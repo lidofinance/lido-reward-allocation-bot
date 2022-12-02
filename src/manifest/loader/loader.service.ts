@@ -3,15 +3,15 @@ import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { readFile } from 'fs/promises';
 import { ManifestParsed, ParserService } from 'manifest/parser';
-import { ProviderService } from 'ethereum/provider';
 import { MANIFEST_DIR } from './loader.constants';
+import { ExecutionService } from 'ethereum/execution';
 
 @Injectable()
 export class LoaderService {
   constructor(
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: LoggerService,
     private parserService: ParserService,
-    private providerService: ProviderService,
+    private providerService: ExecutionService,
   ) {}
 
   /**

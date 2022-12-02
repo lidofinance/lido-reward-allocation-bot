@@ -11,12 +11,12 @@ import {
 import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import { OneAtTime } from 'common/decorators';
 import { METRIC_ACCOUNT_BALANCE } from 'common/prometheus';
-import { ProviderService } from 'ethereum/provider';
 import {
   WALLET_BALANCE_UPDATE_BLOCK_RATE,
   WALLET_MIN_BALANCE,
   WALLET_PRIVATE_KEY,
 } from './wallet.constants';
+import { ExecutionService } from 'ethereum/execution';
 
 @Injectable()
 export class WalletService implements OnModuleInit {
@@ -24,7 +24,7 @@ export class WalletService implements OnModuleInit {
     @InjectMetric(METRIC_ACCOUNT_BALANCE) private accountBalance: Gauge<string>,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private logger: LoggerService,
     @Inject(WALLET_PRIVATE_KEY) private privateKey: string,
-    private providerService: ProviderService,
+    private executorService: ExecutionService,
   ) {}
 
   async onModuleInit() {
@@ -40,7 +40,7 @@ export class WalletService implements OnModuleInit {
    * Subscribes to the event of a new block appearance
    */
   public subscribeToEthereumUpdates() {
-    const provider = this.providerService.provider;
+    const provider = this.executorService.provider;
 
     provider.on('block', async (blockNumber) => {
       if (blockNumber % WALLET_BALANCE_UPDATE_BLOCK_RATE !== 0) return;
@@ -56,7 +56,7 @@ export class WalletService implements OnModuleInit {
   @OneAtTime()
   public async updateBalance() {
     const { address } = this;
-    const provider = this.providerService.provider;
+    const provider = this.executorService.provider;
     const balanceWei = await provider.getBalance(address);
     const formatted = `${formatEther(balanceWei)} ETH`;
     const isSufficient = balanceWei.gte(WALLET_MIN_BALANCE);

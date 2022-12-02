@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@lido-nestjs/execution": "^1.4.0",
     "@lido-sdk/constants": "^1.2.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^1.0.1",
