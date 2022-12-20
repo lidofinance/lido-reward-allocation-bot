@@ -1,0 +1,72 @@
+{
+  "name": "Curve (Arbitrum)",
+  "version": "1.0.0",
+  "metrics": [
+    {
+      "name": "isCurvePeriodFinished",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0xC20129f1dd4DFeD023a6d6A8de9d54A7b61af5CC",
+        "method": "function is_curve_rewards_period_finished() view returns (bool)"
+      }
+    },
+    {
+      "name": "curvePeriodFinishUnix",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0xC20129f1dd4DFeD023a6d6A8de9d54A7b61af5CC",
+        "method": "function curve_period_finish() view returns (uint256)"
+      }
+    },
+    {
+      "name": "isPeriodFinished",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0xC20129f1dd4DFeD023a6d6A8de9d54A7b61af5CC",
+        "method": "function is_rewards_period_finished() view returns (bool)"
+      }
+    },
+    {
+      "name": "periodFinishUnix",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0xC20129f1dd4DFeD023a6d6A8de9d54A7b61af5CC",
+        "method": "function period_finish() view returns (uint256)"
+      }
+    },
+    {
+      "name": "contractTokenBalance",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0x13Ad51ed4F1B7e9Dc168d8a00cB3f4dDD85EfA60",
+        "method": "function balanceOf(address) view returns (uint256)",
+        "args": ["0x098EF55011B6B8c99845128114A9D9159777d697"]
+      }
+    },
+    {
+      "name": "managerTokenBalance",
+      "request": {
+        "type": "contractMethodCall",
+        "address": "0x13Ad51ed4F1B7e9Dc168d8a00cB3f4dDD85EfA60",
+        "method": "function balanceOf(address) view returns (uint256)",
+        "args": ["0xC20129f1dd4DFeD023a6d6A8de9d54A7b61af5CC"]
+      }
+    }
+  ],
+  "automation": [
+    {
+      "name": "startNextPeriodCall",
+      "rules": {
+        "and": [
+          { "===": [{ "var": "isCurvePeriodFinished" }, true] },
+          { ">": [{ "var": "managerTokenBalance" }, 0] }
+        ]
+      },
+      "request": {
+        "type": "contractMethodSignedCall",
+        "address": "0xC20129f1dd4DFeD023a6d6A8de9d54A7b61af5CC",
+        "method": "function start_next_rewards_period()"
+      }
+    }
+  ]
+}
