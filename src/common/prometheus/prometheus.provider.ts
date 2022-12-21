@@ -59,6 +59,6 @@ export const PrometheusManifestRequestsCounterProvider = makeCounterProvider({
 
 export const PrometheusTransactionGaugeProvider = makeGaugeProvider({
   name: METRIC_TRANSACTION_COUNTER,
-  help: 'Number of transaction',
-  labelNames: ['status'],
+  help: 'Number of transactions',
+  labelNames: ['status', 'network'],
 });
