@@ -33,8 +33,8 @@ export const PrometheusRPCErrorsCounterProvider = makeCounterProvider({
 
 export const PrometheusAccountBalanceGaugeProvider = makeGaugeProvider({
   name: METRIC_ACCOUNT_BALANCE,
-  help: 'Account balance',
-  labelNames: ['address'],
+  help: 'Account balance on the given network',
+  labelNames: ['address', 'network'],
 });
 
 export const PrometheusManifestRequestsHistogramProvider =
