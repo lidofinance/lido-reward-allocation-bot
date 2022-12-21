@@ -42,23 +42,29 @@ export const PrometheusManifestRequestsHistogramProvider =
     name: METRIC_MANIFEST_REQUEST_DURATION,
     help: 'Metric request duration',
     buckets: [0.1, 0.2, 0.3, 0.6, 1, 1.5, 2, 5],
-    labelNames: ['manifestName', 'manifestVersion', 'metric'],
+    labelNames: ['network', 'manifestName', 'manifestVersion', 'metric'],
   });
 
 export const PrometheusManifestRequestsResultGaugeProvider = makeGaugeProvider({
   name: METRIC_MANIFEST_REQUEST_RESULT,
   help: 'Manifest metric values',
-  labelNames: ['manifestName', 'manifestVersion', 'metric'],
+  labelNames: ['network', 'manifestName', 'manifestVersion', 'metric'],
 });
 
 export const PrometheusManifestRequestsCounterProvider = makeCounterProvider({
   name: METRIC_MANIFEST_REQUEST_COUNTER,
   help: 'Number of manifest metric requests',
-  labelNames: ['manifestName', 'manifestVersion', 'metric', 'status'],
+  labelNames: [
+    'network',
+    'manifestName',
+    'manifestVersion',
+    'metric',
+    'status',
+  ],
 });
 
 export const PrometheusTransactionGaugeProvider = makeGaugeProvider({
   name: METRIC_TRANSACTION_COUNTER,
   help: 'Number of transactions',
-  labelNames: ['status', 'network'],
+  labelNames: ['network', 'status'],
 });
