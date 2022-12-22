@@ -9,6 +9,7 @@ import { MockProviderModule, ProviderService } from 'ethereum/provider';
 import { WalletModule } from 'ethereum/wallet';
 import { WALLET_PRIVATE_KEY } from './wallet.constants';
 import { WalletService } from './wallet.service';
+import { register } from 'prom-client';
 
 describe('WalletService', () => {
   const wallet = Wallet.createRandom();
@@ -35,6 +36,11 @@ describe('WalletService', () => {
     loggerService = moduleRef.get(WINSTON_MODULE_NEST_PROVIDER);
 
     jest.spyOn(loggerService, 'log').mockImplementation(() => undefined);
+  });
+
+  afterEach(async () => {
+    // from https://github.com/willsoto/nestjs-prometheus/blame/v4.7.0/test/module.spec.ts#L18
+    register.clear();
   });
 
   describe('subscribeToEthereumUpdates', () => {
