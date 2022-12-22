@@ -44,13 +44,12 @@ export class LoaderService {
    * @returns array of parsed JSON objects
    */
   public async parseManifests(filesPaths: string[]): Promise<ManifestParsed[]> {
-    const network = await this.providerService.getNetworkName();
     return await Promise.all(
       filesPaths.map(async (filesPath) => {
         this.logger.log('Loading manifest', { filesPath });
         const content = await readFile(filesPath);
 
-        return this.parserService.parseJSON(String(content), network);
+        return this.parserService.parseJSON(String(content));
       }),
     );
   }

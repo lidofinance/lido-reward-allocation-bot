@@ -57,23 +57,20 @@ export class WalletService implements OnModuleInit {
   public async updateBalance() {
     const { address } = this;
     const provider = this.providerService.provider;
-    const network = await this.providerService.getNetworkName();
     const balanceWei = await provider.getBalance(address);
     const formatted = `${formatEther(balanceWei)} ETH`;
     const isSufficient = balanceWei.gte(WALLET_MIN_BALANCE);
 
-    this.accountBalance.labels({ address, network }).set(Number(balanceWei));
+    this.accountBalance.labels({ address }).set(Number(balanceWei));
 
     if (isSufficient) {
       this.logger.log('Account balance is sufficient', {
         address,
-        network,
         balance: formatted,
       });
     } else {
       this.logger.warn('Account balance is too low', {
         address,
-        network,
         balance: formatted,
       });
     }

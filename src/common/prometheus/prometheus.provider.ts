@@ -33,8 +33,8 @@ export const PrometheusRPCErrorsCounterProvider = makeCounterProvider({
 
 export const PrometheusAccountBalanceGaugeProvider = makeGaugeProvider({
   name: METRIC_ACCOUNT_BALANCE,
-  help: 'Account balance on the given network',
-  labelNames: ['address', 'network'],
+  help: 'Account balance',
+  labelNames: ['address'],
 });
 
 export const PrometheusManifestRequestsHistogramProvider =
@@ -42,29 +42,23 @@ export const PrometheusManifestRequestsHistogramProvider =
     name: METRIC_MANIFEST_REQUEST_DURATION,
     help: 'Metric request duration',
     buckets: [0.1, 0.2, 0.3, 0.6, 1, 1.5, 2, 5],
-    labelNames: ['network', 'manifestName', 'manifestVersion', 'metric'],
+    labelNames: ['manifestName', 'manifestVersion', 'metric'],
   });
 
 export const PrometheusManifestRequestsResultGaugeProvider = makeGaugeProvider({
   name: METRIC_MANIFEST_REQUEST_RESULT,
   help: 'Manifest metric values',
-  labelNames: ['network', 'manifestName', 'manifestVersion', 'metric'],
+  labelNames: ['manifestName', 'manifestVersion', 'metric'],
 });
 
 export const PrometheusManifestRequestsCounterProvider = makeCounterProvider({
   name: METRIC_MANIFEST_REQUEST_COUNTER,
   help: 'Number of manifest metric requests',
-  labelNames: [
-    'network',
-    'manifestName',
-    'manifestVersion',
-    'metric',
-    'status',
-  ],
+  labelNames: ['manifestName', 'manifestVersion', 'metric', 'status'],
 });
 
 export const PrometheusTransactionGaugeProvider = makeGaugeProvider({
   name: METRIC_TRANSACTION_COUNTER,
-  help: 'Number of transactions',
-  labelNames: ['network', 'status'],
+  help: 'Number of transaction',
+  labelNames: ['status'],
 });

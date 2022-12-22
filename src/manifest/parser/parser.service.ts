@@ -17,7 +17,7 @@ export class ParserService {
    * @param content manifest file content
    * @returns parsed manifest
    */
-  public parseJSON(content: string, network?: string): ManifestParsed {
+  public parseJSON(content: string): ManifestParsed {
     try {
       const manifestRaw = JSON.parse(content) as ManifestRaw;
       const { name, version, metrics, automation } = manifestRaw;
@@ -35,12 +35,10 @@ export class ParserService {
         metrics: this.parserMetricService.parseRawMetrics(
           manifestRaw,
           manifestRaw.metrics,
-          network,
         ),
         automation: this.parserMetricService.parseRawMetrics(
           manifestRaw,
           manifestRaw.automation,
-          network,
         ),
       };
     } catch (error) {

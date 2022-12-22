@@ -43,11 +43,8 @@ export class ParserMetricsService {
   public parseRawMetrics(
     manifest: ManifestRaw,
     metrics: MetricRaw[],
-    network = 'unknown',
   ): MetricParsed[] {
-    return metrics.map((metric) =>
-      this.parseRawMetric(manifest, metric, network),
-    );
+    return metrics.map((metric) => this.parseRawMetric(manifest, metric));
   }
 
   /**
@@ -59,9 +56,8 @@ export class ParserMetricsService {
   public parseRawMetric(
     manifest: ManifestRaw,
     metric: MetricRaw,
-    network: string,
   ): MetricParsed {
-    const request = this.buildRequest(manifest, metric, network);
+    const request = this.buildRequest(manifest, metric);
     return { ...metric, request };
   }
 
@@ -71,16 +67,11 @@ export class ParserMetricsService {
    * @param metric raw metric
    * @returns request function
    */
-  public buildRequest(
-    manifest: ManifestRaw,
-    metric: MetricRaw,
-    network: string,
-  ) {
+  public buildRequest(manifest: ManifestRaw, metric: MetricRaw) {
     const request = this.parserRequestService.parseRequest(metric.request);
 
     return async (...args: Parameters<typeof request>): Promise<unknown> => {
       const commonLabels = {
-        network,
         manifestName: manifest.name,
         manifestVersion: manifest.version,
         metric: metric.name,
