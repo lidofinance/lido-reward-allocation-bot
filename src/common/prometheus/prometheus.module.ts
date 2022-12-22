@@ -9,19 +9,16 @@ import {
   PrometheusManifestRequestsCounterProvider,
   PrometheusTransactionGaugeProvider,
 } from './prometheus.provider';
-import { METRICS_PREFIX, METRICS_URL } from './prometheus.constants';
+import { PrometheusOptionsProvider } from './prometheus-options.provider';
 import { PrometheusController } from './prometheus.controller';
 
-export const PrometheusModule = PrometheusModuleSource.register({
+export const PrometheusModule = PrometheusModuleSource.registerAsync({
+  useClass: PrometheusOptionsProvider,
+  inject: [PrometheusOptionsProvider],
   controller: PrometheusController,
-  path: METRICS_URL,
-  defaultMetrics: {
-    enabled: true,
-    config: { prefix: METRICS_PREFIX },
-  },
 });
 
-const providers = [
+const metricsProviders = [
   PrometheusBuildInfoGaugeProvider,
   PrometheusRPCRequestsHistogramProvider,
   PrometheusRPCErrorsCounterProvider,
@@ -33,5 +30,8 @@ const providers = [
 ];
 
 PrometheusModule.global = true;
-PrometheusModule.providers = providers;
-PrometheusModule.exports = providers;
+PrometheusModule.providers = [
+  ...(PrometheusModule.providers || []),
+  ...metricsProviders,
+];
+PrometheusModule.exports = PrometheusModule.providers;

@@ -18,6 +18,7 @@ import { ProcessorService, ProcessorModule } from '../src/manifest/processor';
 import { Block } from '@ethersproject/abstract-provider';
 import { ContractTransaction } from '@ethersproject/contracts';
 import { startServer } from './server';
+import { register } from 'prom-client';
 
 const MANIFESTS_DIR = `${__dirname}/../manifests/mainnet/`;
 
@@ -70,6 +71,11 @@ describe.each([
     jest.spyOn(loggerService, 'log').mockImplementation(() => undefined);
     jest.spyOn(loggerService, 'warn').mockImplementation(() => undefined);
     jest.spyOn(loggerService, 'debug').mockImplementation(() => undefined);
+  });
+
+  afterEach(async () => {
+    // from https://github.com/willsoto/nestjs-prometheus/blame/v4.7.0/test/module.spec.ts#L18
+    register.clear();
   });
 
   describe('global checks', () => {
