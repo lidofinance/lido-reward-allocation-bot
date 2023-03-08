@@ -24,7 +24,7 @@
     "@lido-sdk/constants": "^1.6.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^1.0.1",
-    "@nestjs/core": "^8.0.0",
+    "@nestjs/core": "^9.0.5",
     "@nestjs/platform-fastify": "^8.0.9",
     "@nestjs/terminus": "^8.0.1",
     "@nestjs/throttler": "^2.0.0",
