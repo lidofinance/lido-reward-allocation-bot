@@ -59,7 +59,7 @@
       "rules": {
         "and": [
           { "===": [{ "var": "isCurvePeriodFinished" }, true] },
-          { ">": [{ "var": "managerTokenBalance" }, 3000000000000000000000] }
+          { ">": [{ "var": "managerTokenBalance" }, 0] }
         ]
       },
       "request": {
