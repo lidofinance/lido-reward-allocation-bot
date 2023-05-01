@@ -1,4 +1,4 @@
-## [1.9.1](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.9.0...1.9.1) (2023-05-01)
+## [1.9.2](https://github.com/lidofinance/lido-reward-allocation-bot/compare/1.9.0...1.9.2) (2023-05-01)
 
 
 ### Bug Fixes
